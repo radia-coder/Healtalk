@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterBar, { FilterState } from "@/components/psychologists/FilterBar";
 import TherapistListCard from "@/components/psychologists/TherapistListCard";
@@ -212,7 +212,7 @@ const matchesClientFilters = (therapist: TherapistCardData, filters: FilterState
   matchesInsuranceFilter(therapist, filters) &&
   matchesPriceFilter(therapist, filters);
 
-export default function FindPsychologistsPage() {
+function FindPsychologistsPageContent() {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(createEmptyFilters());
   const [psychologists, setPsychologists] = useState<TherapistCardData[]>([]);
@@ -380,5 +380,26 @@ export default function FindPsychologistsPage() {
 
       </div>
     </div>
+  );
+}
+
+function FindPsychologistsPageFallback() {
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="relative max-w-[1400px] mx-auto px-4 md:px-8 py-12 pt-32">
+        <div className="text-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary mb-4" />
+          <p className="text-slate-500">Loading psychologists...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function FindPsychologistsPage() {
+  return (
+    <Suspense fallback={<FindPsychologistsPageFallback />}>
+      <FindPsychologistsPageContent />
+    </Suspense>
   );
 }
