@@ -89,7 +89,7 @@ export default function OnboardingStep4() {
     <div className="flex min-h-screen flex-col bg-[#F6F2EA]">
       <OnboardingHeader progress={90} />
 
-      <div className="flex-1 flex w-full flex-col items-center px-4 pt-2 pb-28 sm:px-8">
+      <div className="flex-1 flex w-full flex-col items-center px-4 pt-6 pb-28 sm:px-8 sm:pt-8">
         <h1 className="mb-6 px-2 text-center font-figtree text-[20px] font-medium leading-tight text-black">
           How often do you want to meet?
         </h1>
