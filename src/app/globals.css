@@ -1,0 +1,793 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-geist-mono);
+  --font-logo: "Lastik", Georgia, serif;
+  --font-heading: "Switzer", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-figtree: var(--font-figtree);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-success: var(--success);
+  --color-text-secondary: var(--text-secondary);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  /* HealTalk Custom Theme */
+  --radius: 0.5rem; /* 8px for cards, 6px for buttons */
+
+  /* Main Colors - Updated Palette */
+  --brand-dark-green: #131E0D;
+  --primary-orange: #FC7D45;
+  --accent-lime: #D2E500;
+  --accent-yellow: #F0FF80;
+  --link-green: #408954;
+  
+  /* Backgrounds */
+  --bg-warm-white: #FFFBF8;
+  --bg-light-gray: #F7F2EB;
+  --bg-alt-purple: #EBEBFF;
+  --bg-alt-green: #E1F4D7;
+  --bg-alt-pink: #FFE5F9;
+
+  /* Background & Text */
+  --background: #F5F1E8; /* Soft Beige (matches Home background) */
+  --foreground: #131E0D; /* Dark Green */
+  --text-secondary: #408954; /* Green (Links/Muted) */
+
+  /* Component Colors */
+  --card: #F7F2EB;
+  --card-foreground: #131E0D;
+  --popover: #F7F2EB;
+  --popover-foreground: #131E0D;
+
+  /* Theme Colors */
+  --primary: #FC7D45; /* Coral Orange */
+  --primary-foreground: #FFFFFF; /* White Text */
+  --secondary: #131E0D; /* Dark Green */
+  --secondary-foreground: #FFFFFF; /* White Text */
+  --accent: #D2E500; /* Bright Lime */
+  --accent-foreground: #131E0D;
+
+  /* UI States */
+  --muted: #F7F2EB; /* Light Gray BG */
+  --muted-foreground: #408954;
+  --destructive: #FC7D45;
+  --border: #E1F4D7; /* Pale Green for subtle borders, or use #131E0D for strong ones */
+  --input: #E1F4D7;
+  --ring: #FC7D45;
+
+  /* Success */
+  --success: #408954;
+
+  /* Charts - mapped to new palette */
+  --chart-1: #FC7D45; /* Orange */
+  --chart-2: #131E0D; /* Green */
+  --chart-3: #D2E500; /* Lime */
+  --chart-4: #408954; /* Link Green */
+  --chart-5: #F0FF80; /* Yellow */
+
+  /* Sidebar */
+  --sidebar: #FFFBF8;
+  --sidebar-foreground: #131E0D;
+  --sidebar-primary: #FC7D45;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F7F2EB;
+  --sidebar-accent-foreground: #131E0D;
+  --sidebar-border: #E1F4D7;
+  --sidebar-ring: #FC7D45;
+
+  /* Dashboard Palette 1 (Light) */
+  --dash-bg: #f3f7ff;
+  --dash-surface: #ffffff;
+  --dash-surface-elev: #eef4ff;
+  --dash-border: #dbe5f5;
+  --dash-border-strong: #c2d2ea;
+  --dash-text: #0f1b2d;
+  --dash-text-muted: #5f7392;
+  --dash-primary: #4f8cff;
+  --dash-primary-hover: #3f7df0;
+  --dash-primary-soft: #eaf1ff;
+  --dash-accent: #2dd4bf;
+  --dash-accent-soft: #ddfaf6;
+  --dash-success: #22c55e;
+  --dash-success-soft: #dcfce7;
+  --dash-warning: #f59e0b;
+  --dash-warning-soft: #fef3c7;
+  --dash-danger: #f87171;
+  --dash-danger-soft: #fee2e2;
+  --dash-chip: #edf3ff;
+}
+
+.dark {
+  /* Reversed for Dark Mode: Background is Dark Green, Text is Soft Beige */
+  --background: #131E0D;
+  --foreground: #F7F2EB;
+
+  --card: #131E0D;
+  --card-foreground: #F7F2EB;
+  --popover: #131E0D;
+  --popover-foreground: #F7F2EB;
+  
+  --primary: #FC7D45;
+  --primary-foreground: #FFFFFF;
+  
+  --secondary: #FFFBF8; /* Secondary BG in dark mode usually needs to be distinct, maybe Warm White text on dark? Or just keep secondary buttons dark green? */
+  --secondary-foreground: #131E0D;
+  
+  --muted: #1a2e12; /* Slightly lighter dark green for muted areas? Or just use black transparency. Let's use a dark shade. */
+  --muted-foreground: #E1F4D7; /* lighter green for text */
+  
+  --accent: #D2E500;
+  --accent-foreground: #131E0D;
+  
+  --destructive: #FC7D45;
+  --border: #2f4f25; /* Darker border for dark mode */
+  --input: #2f4f25;
+  --ring: #FC7D45;
+  
+  --chart-1: #FC7D45;
+  --chart-2: #408954;
+  --chart-3: #D2E500;
+  --chart-4: #16a34a;
+  --chart-5: #E1F4D7;
+  
+  --sidebar: #131E0D;
+  --sidebar-foreground: #FFFBF8;
+  --sidebar-primary: #FC7D45;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1a2e12;
+  --sidebar-accent-foreground: #FFFBF8;
+  --sidebar-border: #2f4f25;
+  --sidebar-ring: #FC7D45;
+
+  /* Dashboard Palette 1 (Dark) */
+  --dash-bg: #0b1220;
+  --dash-surface: #121a2b;
+  --dash-surface-elev: #172238;
+  --dash-border: #2a3550;
+  --dash-border-strong: #3b4a68;
+  --dash-text: #eaf1ff;
+  --dash-text-muted: #9fb0cc;
+  --dash-primary: #4f8cff;
+  --dash-primary-hover: #74a4ff;
+  --dash-primary-soft: rgba(79, 140, 255, 0.16);
+  --dash-accent: #2dd4bf;
+  --dash-accent-soft: rgba(45, 212, 191, 0.16);
+  --dash-success: #22c55e;
+  --dash-success-soft: rgba(34, 197, 94, 0.18);
+  --dash-warning: #f59e0b;
+  --dash-warning-soft: rgba(245, 158, 11, 0.18);
+  --dash-danger: #f87171;
+  --dash-danger-soft: rgba(248, 113, 113, 0.18);
+  --dash-chip: #1c2840;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+  }
+
+  .font-logo {
+    font-family: var(--font-logo), Georgia, serif;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading), system-ui, -apple-system, sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .headline-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50px;
+  }
+
+  .dashboard-theme {
+    background-color: var(--dash-bg);
+    color: var(--dash-text);
+  }
+
+  .dash-card {
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+  }
+
+  .dash-card-elev {
+    background: var(--dash-surface-elev);
+    border: 1px solid var(--dash-border);
+    border-radius: 16px;
+  }
+
+  .dash-heading {
+    color: var(--dash-text);
+  }
+
+  .dash-muted {
+    color: var(--dash-text-muted);
+  }
+
+  .dash-border {
+    border-color: var(--dash-border);
+  }
+
+  .dash-input {
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-border);
+    color: var(--dash-text);
+  }
+
+  .dash-input::placeholder {
+    color: var(--dash-text-muted);
+  }
+
+  .dash-btn-primary {
+    background: var(--dash-primary);
+    color: #fff;
+    border: 1px solid transparent;
+  }
+
+  .dash-btn-primary:hover {
+    background: var(--dash-primary-hover);
+  }
+
+  .dash-btn-outline {
+    background: var(--dash-surface);
+    color: var(--dash-text);
+    border: 1px solid var(--dash-border);
+  }
+
+  .dash-btn-outline:hover {
+    background: var(--dash-surface-elev);
+    border-color: var(--dash-border-strong);
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+/* Hide scrollbar utilities */
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Fade-in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* ── Admin Dark Theme ─────────────────────────────────────────────────── */
+.admin-theme {
+  color-scheme: dark;
+}
+
+/* Page background & base text */
+.admin-theme {
+  background-color: rgb(3 7 18); /* gray-950 */
+  color: rgb(156 163 175); /* gray-400 */
+}
+
+/* Headings */
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4 {
+  color: rgb(255 255 255);
+}
+
+/* Paragraphs / descriptions */
+.admin-theme p.text-gray-500,
+.admin-theme span.text-gray-500 {
+  color: rgb(107 114 128) !important;
+}
+
+/* Cards — white → dark */
+.admin-theme .bg-white {
+  background-color: rgb(17 24 39) !important; /* gray-900 */
+}
+
+/* Borders */
+.admin-theme .border-\[\#E6EAF2\] {
+  border-color: rgb(31 41 55) !important; /* gray-800 */
+}
+.admin-theme .border-gray-200 {
+  border-color: rgb(31 41 55) !important;
+}
+.admin-theme .border-dashed.border-gray-200 {
+  border-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+/* Table header background */
+.admin-theme .bg-gray-50\/50 {
+  background-color: rgb(31 41 55 / 0.5) !important;
+}
+.admin-theme .bg-gray-50 {
+  background-color: rgb(31 41 55) !important;
+}
+
+/* Hover rows */
+.admin-theme tr:hover .hover\:bg-gray-50\/50,
+.admin-theme .hover\:bg-gray-50\/50:hover {
+  background-color: rgb(31 41 55 / 0.4) !important;
+}
+
+/* Table dividers */
+.admin-theme .divide-\[\#E6EAF2\] > * + * {
+  border-color: rgb(31 41 55) !important;
+}
+
+/* Text gray overrides */
+.admin-theme .text-gray-900 {
+  color: rgb(255 255 255) !important;
+}
+.admin-theme .text-gray-700 {
+  color: rgb(209 213 219) !important;
+}
+.admin-theme .text-gray-600 {
+  color: rgb(156 163 175) !important;
+}
+.admin-theme .text-gray-500 {
+  color: rgb(107 114 128) !important;
+}
+.admin-theme .text-gray-400 {
+  color: rgb(75 85 99) !important;
+}
+
+/* Blue accent → red accent */
+.admin-theme .bg-\[\#5B6CFF\] {
+  background-color: rgb(220 38 38) !important;
+}
+.admin-theme .hover\:bg-\[\#4a5ae8\]:hover {
+  background-color: rgb(185 28 28) !important;
+}
+.admin-theme .text-\[\#5B6CFF\] {
+  color: rgb(248 113 113) !important;
+}
+.admin-theme .bg-\[\#EEF0FF\] {
+  background-color: rgb(127 29 29 / 0.2) !important;
+}
+.admin-theme .border-\[\#5B6CFF\] {
+  border-color: rgb(220 38 38) !important;
+}
+.admin-theme .ring-\[\#5B6CFF\]\/20 {
+  --tw-ring-color: rgb(220 38 38 / 0.2) !important;
+}
+.admin-theme .focus\:border-\[\#5B6CFF\]:focus {
+  border-color: rgb(220 38 38) !important;
+}
+
+/* Filter active tabs */
+.admin-theme button.bg-\[\#5B6CFF\] {
+  background-color: rgb(220 38 38) !important;
+  border-color: rgb(220 38 38) !important;
+}
+
+/* Inputs */
+.admin-theme input,
+.admin-theme textarea,
+.admin-theme select {
+  background-color: rgb(17 24 39) !important;
+  border-color: rgb(55 65 81) !important;
+  color: rgb(229 231 235) !important;
+}
+.admin-theme input::placeholder,
+.admin-theme textarea::placeholder {
+  color: rgb(75 85 99) !important;
+}
+
+/* Outline / ghost buttons */
+.admin-theme .border.border-input {
+  background-color: rgb(17 24 39) !important;
+  border-color: rgb(55 65 81) !important;
+  color: rgb(209 213 219) !important;
+}
+
+/* Status badge backgrounds that look bad on dark */
+.admin-theme .bg-gray-100 {
+  background-color: rgb(31 41 55) !important;
+}
+.admin-theme .bg-gray-100.text-gray-700 {
+  color: rgb(156 163 175) !important;
+}
+.admin-theme .hover\:bg-gray-50:hover,
+.admin-theme .hover\:bg-gray-100:hover {
+  background-color: rgb(31 41 55) !important;
+}
+
+/* Rounded pill filters not selected */
+.admin-theme button.bg-white {
+  background-color: rgb(17 24 39) !important;
+  border-color: rgb(55 65 81) !important;
+}
+.admin-theme button.bg-white.text-gray-600 {
+  color: rgb(156 163 175) !important;
+}
+
+/* Modal backdrop already dark; modal card */
+.admin-theme .shadow-2xl.bg-white {
+  background-color: rgb(17 24 39) !important;
+}
+
+/* Rounded card empty state */
+.admin-theme .rounded-\[24px\].bg-white {
+  background-color: rgb(17 24 39) !important;
+}
+.admin-theme .rounded-\[20px\].bg-white {
+  background-color: rgb(17 24 39) !important;
+}
+
+/* Top border in modals */
+.admin-theme .border-t.border-\[\#E6EAF2\],
+.admin-theme .border-b.border-\[\#E6EAF2\] {
+  border-color: rgb(31 41 55) !important;
+}
+
+/* hover effects on icon buttons */
+.admin-theme .hover\:bg-\[\#EEF0FF\]:hover {
+  background-color: rgb(127 29 29 / 0.2) !important;
+}
+.admin-theme .hover\:bg-red-50:hover {
+  background-color: rgb(127 29 29 / 0.2) !important;
+}
+.admin-theme .hover\:bg-green-50:hover {
+  background-color: rgb(20 83 45 / 0.2) !important;
+}
+
+/* Sticky header/footer inside modal */
+.admin-theme .sticky.bg-white {
+  background-color: rgb(17 24 39) !important;
+}
+
+/* Revenue card */
+.admin-theme .bg-green-50 {
+  background-color: rgb(20 83 45 / 0.2) !important;
+}
+
+/* Avatar fallback */
+.admin-theme .bg-\[\#364a60\] {
+  background-color: rgb(55 65 81) !important;
+}
+
+/* ── Dashboard Route Unification Layer (Palette 1 tokens) ─────────────────── */
+.dashboard-theme .bg-white {
+  background-color: var(--dash-surface) !important;
+}
+.dashboard-theme .bg-white\/90,
+.dashboard-theme .bg-white\/80,
+.dashboard-theme .bg-white\/50 {
+  background-color: color-mix(in srgb, var(--dash-surface) 90%, transparent) !important;
+}
+
+.dashboard-theme .bg-gray-50,
+.dashboard-theme .bg-gray-50\/50,
+.dashboard-theme .bg-gray-100\/50 {
+  background-color: var(--dash-surface-elev) !important;
+}
+.dashboard-theme .bg-gray-100,
+.dashboard-theme .bg-gray-200 {
+  background-color: var(--dash-chip) !important;
+}
+
+.dashboard-theme .text-gray-900,
+.dashboard-theme .text-gray-800,
+.dashboard-theme .text-gray-700 {
+  color: var(--dash-text) !important;
+}
+.dashboard-theme .text-gray-600,
+.dashboard-theme .text-gray-500,
+.dashboard-theme .text-gray-400,
+.dashboard-theme .text-gray-300 {
+  color: var(--dash-text-muted) !important;
+}
+
+.dashboard-theme .border-gray-100,
+.dashboard-theme .border-gray-200,
+.dashboard-theme .border-gray-300,
+.dashboard-theme .border-gray-700,
+.dashboard-theme .border-\[\#E6EAF2\] {
+  border-color: var(--dash-border) !important;
+}
+.dashboard-theme .divide-gray-200 > * + *,
+.dashboard-theme .divide-\[\#E6EAF2\] > * + * {
+  border-color: var(--dash-border) !important;
+}
+
+.dashboard-theme .hover\:bg-gray-50:hover,
+.dashboard-theme .hover\:bg-gray-100:hover,
+.dashboard-theme .hover\:bg-white\/50:hover {
+  background-color: var(--dash-surface-elev) !important;
+}
+.dashboard-theme .hover\:text-gray-700:hover,
+.dashboard-theme .hover\:text-gray-900:hover {
+  color: var(--dash-text) !important;
+}
+
+.dashboard-theme .bg-\[\#5B6CFF\] {
+  background-color: var(--dash-primary) !important;
+}
+.dashboard-theme .hover\:bg-\[\#4a5ae0\]:hover,
+.dashboard-theme .hover\:bg-\[\#4a5ae8\]:hover {
+  background-color: var(--dash-primary-hover) !important;
+}
+.dashboard-theme .text-\[\#5B6CFF\] {
+  color: var(--dash-primary) !important;
+}
+.dashboard-theme .bg-\[\#EEF0FF\] {
+  background-color: var(--dash-primary-soft) !important;
+}
+.dashboard-theme .hover\:bg-\[\#EEF0FF\]:hover {
+  background-color: var(--dash-primary-soft) !important;
+}
+.dashboard-theme .border-\[\#5B6CFF\] {
+  border-color: var(--dash-primary) !important;
+}
+
+.dashboard-theme .ring-\[\#5B6CFF\]\/20 {
+  --tw-ring-color: rgba(79, 140, 255, 0.2) !important;
+}
+.dashboard-theme .focus\:border-\[\#5B6CFF\]:focus {
+  border-color: var(--dash-primary) !important;
+}
+.dashboard-theme .focus\:ring-\[\#5B6CFF\]\/20:focus {
+  --tw-ring-color: rgba(79, 140, 255, 0.2) !important;
+}
+
+.dashboard-theme .bg-blue-50,
+.dashboard-theme .bg-blue-100,
+.dashboard-theme .bg-purple-50,
+.dashboard-theme .bg-purple-100 {
+  background-color: var(--dash-primary-soft) !important;
+}
+.dashboard-theme .text-blue-600,
+.dashboard-theme .text-blue-500,
+.dashboard-theme .text-purple-600,
+.dashboard-theme .text-purple-500 {
+  color: var(--dash-primary) !important;
+}
+.dashboard-theme .hover\:bg-blue-50:hover,
+.dashboard-theme .hover\:text-blue-700:hover {
+  background-color: var(--dash-primary-soft) !important;
+  color: var(--dash-primary-hover) !important;
+}
+
+.dashboard-theme .from-blue-500,
+.dashboard-theme .from-blue-600 {
+  --tw-gradient-from: var(--dash-primary) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--dash-primary), transparent) var(--tw-gradient-to-position) !important;
+}
+.dashboard-theme .to-blue-600,
+.dashboard-theme .to-blue-700 {
+  --tw-gradient-to: var(--dash-primary-hover) var(--tw-gradient-to-position) !important;
+}
+.dashboard-theme .from-green-500,
+.dashboard-theme .from-green-600 {
+  --tw-gradient-from: var(--dash-success) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--dash-success), transparent) var(--tw-gradient-to-position) !important;
+}
+.dashboard-theme .to-green-600,
+.dashboard-theme .to-green-700 {
+  --tw-gradient-to: var(--dash-success) var(--tw-gradient-to-position) !important;
+}
+
+.dashboard-theme .text-blue-100,
+.dashboard-theme .text-green-100 {
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+.dashboard-theme .bg-green-50,
+.dashboard-theme .bg-green-100 {
+  background-color: var(--dash-success-soft) !important;
+}
+.dashboard-theme .text-green-600,
+.dashboard-theme .text-green-700,
+.dashboard-theme .text-green-500 {
+  color: var(--dash-success) !important;
+}
+.dashboard-theme .border-green-100,
+.dashboard-theme .border-green-200,
+.dashboard-theme .border-green-500 {
+  border-color: color-mix(in srgb, var(--dash-success) 40%, var(--dash-border)) !important;
+}
+
+.dashboard-theme .bg-red-50,
+.dashboard-theme .bg-red-100 {
+  background-color: var(--dash-danger-soft) !important;
+}
+.dashboard-theme .text-red-500,
+.dashboard-theme .text-red-600,
+.dashboard-theme .text-red-700,
+.dashboard-theme .text-red-800,
+.dashboard-theme .text-red-400 {
+  color: var(--dash-danger) !important;
+}
+.dashboard-theme .border-red-100,
+.dashboard-theme .border-red-200,
+.dashboard-theme .border-red-500,
+.dashboard-theme .border-red-600 {
+  border-color: color-mix(in srgb, var(--dash-danger) 45%, var(--dash-border)) !important;
+}
+.dashboard-theme .hover\:bg-red-50:hover,
+.dashboard-theme .hover\:bg-red-100:hover,
+.dashboard-theme .hover\:bg-red-700:hover {
+  background-color: var(--dash-danger-soft) !important;
+}
+.dashboard-theme .hover\:text-red-700:hover,
+.dashboard-theme .hover\:text-red-600:hover {
+  color: var(--dash-danger) !important;
+}
+
+.dashboard-theme .bg-amber-50,
+.dashboard-theme .bg-yellow-50,
+.dashboard-theme .bg-yellow-100 {
+  background-color: var(--dash-warning-soft) !important;
+}
+.dashboard-theme .text-amber-700,
+.dashboard-theme .text-yellow-700,
+.dashboard-theme .text-yellow-800,
+.dashboard-theme .text-orange-600,
+.dashboard-theme .text-orange-700 {
+  color: var(--dash-warning) !important;
+}
+
+.dashboard-theme .border-dashed {
+  border-color: var(--dash-border) !important;
+}
+
+.dashboard-theme input,
+.dashboard-theme textarea,
+.dashboard-theme select {
+  border-color: var(--dash-border);
+}
+
+.dashboard-theme .shadow-blue-500\/20,
+.dashboard-theme .shadow-red-500\/20 {
+  box-shadow: none !important;
+}
+
+/* Extra legacy accent mappings used across older dashboard pages */
+.dashboard-theme .text-\[\#20C997\] {
+  color: var(--dash-success) !important;
+}
+.dashboard-theme .bg-\[\#E6F8F3\] {
+  background-color: var(--dash-success-soft) !important;
+}
+.dashboard-theme .text-\[\#FF9F43\] {
+  color: var(--dash-warning) !important;
+}
+.dashboard-theme .bg-\[\#FFF5EB\] {
+  background-color: var(--dash-warning-soft) !important;
+}
+.dashboard-theme .text-\[\#FF6B6B\] {
+  color: var(--dash-danger) !important;
+}
+.dashboard-theme .bg-\[\#FFEEEE\] {
+  background-color: var(--dash-danger-soft) !important;
+}
+.dashboard-theme .hover\:border-\[\#5B6CFF\]:hover {
+  border-color: var(--dash-primary) !important;
+}
+.dashboard-theme .bg-gray-700,
+.dashboard-theme .bg-gray-800 {
+  background-color: var(--dash-chip) !important;
+}
+.dashboard-theme .hover\:bg-gray-800:hover {
+  background-color: var(--dash-surface-elev) !important;
+}

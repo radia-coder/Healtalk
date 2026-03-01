@@ -1,0 +1,29 @@
+
+> psyconnect@0.1.0 build
+> next build
+
+▲ Next.js 16.1.4 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  · clientTraceMetadata
+  · optimizePackageImports
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 19.5s
+  Running next.config.js provided runAfterProductionCompile ...
+✓ Completed runAfterProductionCompile in 12873ms
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/api/admin/reviews/[id]/route.ts:104:45
+Type error: Cannot find name 'id'.
+
+[0m [90m 102 |[39m   [36mif[39m (csrfError) [36mreturn[39m csrfError[33m;[39m
+ [90m 103 |[39m
+[31m[1m>[22m[39m[90m 104 |[39m   [36mawait[39m prisma[33m.[39mreview[33m.[39m[36mdelete[39m({ where[33m:[39m { id[33m:[39m id } })[33m;[39m
+ [90m     |[39m                                             [31m[1m^[22m[39m
+ [90m 105 |[39m
+ [90m 106 |[39m   [36mawait[39m createAuditLog({
+ [90m 107 |[39m     actorId[33m:[39m session[33m.[39muser[33m.[39mid[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

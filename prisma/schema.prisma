@@ -1,0 +1,472 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  phone         String?
+  dateOfBirth   DateTime?
+  role          UserRole  @default(PATIENT)
+  status        UserStatus @default(ACTIVE)
+  authProvider  AuthProvider @default(NEXTAUTH)
+  supabaseAuthId String?   @unique
+  supabaseLinkedAt DateTime?
+  suspendedAt   DateTime?
+  bannedAt      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  patient       Patient?
+  psychologist  Psychologist?
+  admin         Admin?
+  auditLogs     AuditLog[]
+}
+
+enum UserRole {
+  PATIENT
+  PSYCHOLOGIST
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum AuthProvider {
+  NEXTAUTH
+  SUPABASE
+  HYBRID
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Patient specific data
+model Patient {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appointments        Appointment[]
+  messages            Message[]
+  favorites           Favorite[]
+  progress            Progress[]
+  payments            Payment[]
+  reviews             Review[]
+  sessionParticipants SessionParticipant[]
+  screenings          ScreeningAssessment[]
+}
+
+// Psychologist specific data
+model Psychologist {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentials    String
+  licenseNumber  String   @unique
+  credentialDocumentUrl String?
+  credentialDocumentKey String?
+  experience     Int
+  bio            String   @db.Text
+  specializations String[]
+  price60        Int      // Price for 60 min session in cents
+  price90        Int      // Price for 90 min session in cents
+  rating         Float    @default(0)
+  reviewCount    Int      @default(0)
+  status         PsychologistStatus @default(PENDING)
+  approvedAt     DateTime?
+  rejectedAt     DateTime?
+  rejectionReason String? @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  hospitalId     String?
+  hospital       Hospital? @relation(fields: [hospitalId], references: [id])
+
+  appointments     Appointment[]
+  messages         Message[]
+  favorites        Favorite[]
+  reviews          Review[]
+  availability     Availability[]
+  therapySessions  TherapySession[]
+}
+
+enum PsychologistStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Hospital {
+  id           String   @id @default(cuid())
+  name         String
+  location     String
+  address      String
+  status       String   @default("active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  psychologists Psychologist[]
+}
+
+model Appointment {
+  id              String   @id @default(cuid())
+  patientId       String
+  psychologistId  String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  type            AppointmentType @default(VIDEO)
+  duration        Int      // Duration in minutes
+  status          AppointmentStatus @default(SCHEDULED)
+  price           Int      // Price in cents
+  notes           String?  @db.Text
+  reminder24hSentAt DateTime?
+  reminder1hSentAt  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  patient         Patient      @relation(fields: [patientId], references: [id])
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+  payment         Payment?
+}
+
+enum AppointmentType {
+  VIDEO
+  AUDIO
+  IN_PERSON
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Message {
+  id              String   @id @default(cuid())
+  patientId       String
+  psychologistId  String
+  senderId        String   // Can be patient or psychologist userId
+  content         String   @db.Text
+  attachmentUrl   String?
+  attachmentKey   String?
+  attachmentType  String?
+  attachmentName  String?
+  read            Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  patient         Patient      @relation(fields: [patientId], references: [id])
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+model Favorite {
+  id              String   @id @default(cuid())
+  patientId       String
+  psychologistId  String
+  createdAt       DateTime @default(now())
+
+  patient         Patient      @relation(fields: [patientId], references: [id])
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+
+  @@unique([patientId, psychologistId])
+}
+
+model Progress {
+  id        String   @id @default(cuid())
+  patientId String
+  date      DateTime @default(now())
+  mood      String   // great, good, okay, bad, terrible
+  notes     String?  @db.Text
+  goals     Json?    // Array of goal objects
+
+  patient   Patient  @relation(fields: [patientId], references: [id])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  patientId       String
+  appointmentId   String?  @unique
+  sessionId       String?
+  amount          Int      // Amount in cents
+  status          PaymentStatus @default(PENDING)
+  paymentMethod   String   // card, cash, insurance
+  transactionId   String?
+  invoiceNumber   String   @unique
+  createdAt       DateTime @default(now())
+
+  patient         Patient         @relation(fields: [patientId], references: [id])
+  appointment     Appointment?    @relation(fields: [appointmentId], references: [id])
+  therapySession  TherapySession? @relation(fields: [sessionId], references: [id])
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+  FAILED
+}
+
+model Review {
+  id              String   @id @default(cuid())
+  patientId       String
+  psychologistId  String
+  rating          Int      // 1-5
+  comment         String   @db.Text
+  status          ReviewStatus @default(APPROVED)
+  moderatedAt     DateTime?
+  helpful         Int      @default(0)
+  notHelpful      Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  patient         Patient      @relation(fields: [patientId], references: [id])
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+enum ReviewStatus {
+  APPROVED
+  PENDING
+  REJECTED
+}
+
+enum TherapySessionType {
+  ONE_ON_ONE
+  GROUP
+}
+
+enum TherapySessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ParticipantStatus {
+  REGISTERED
+  JOINED
+  LEFT
+  NO_SHOW
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRISIS
+}
+
+model Availability {
+  id              String   @id @default(cuid())
+  psychologistId  String
+  dayOfWeek       Int      // 0-6 (Sunday to Saturday)
+  startTime       String   // HH:mm format
+  endTime         String   // HH:mm format
+  isAvailable     Boolean  @default(true)
+
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+// Blog models
+model BlogPost {
+  id              String   @id @default(cuid())
+  title           String
+  subtitle        String?
+  excerpt         String   @db.Text
+  imageUrl        String
+  category        String?
+  date            DateTime
+  heroType        String?  // 'illustration' | 'photo'
+  heroIllustration String?
+  theme           String?  // 'lilac' | 'green' | 'cream'
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  authorId        String?
+  author          BlogAuthor? @relation(fields: [authorId], references: [id])
+  content         BlogContent[]
+}
+
+model BlogAuthor {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  role          String
+  bio           String   @db.Text
+  imageUrl      String
+  linkedinUrl   String
+  socialLabel   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  posts         BlogPost[]
+}
+
+model BlogContent {
+  id            String   @id @default(cuid())
+  blogPostId    String
+  order         Int      // To maintain content order
+  type          String   // 'paragraph' | 'heading' | 'list' | 'quote'
+  value         String   @db.Text // Store as JSON string for arrays
+
+  blogPost      BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  @@index([blogPostId, order])
+}
+
+// Guide model
+model Guide {
+  id          String   @id @default(cuid())
+  title       String
+  coverTitle  String?
+  theme       String   // 'lavender' | 'green' | 'cream' | 'blue'
+  href        String   @unique
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Podcast model
+model PodcastEpisode {
+  id              String   @id @default(cuid())
+  episodeNumber   String
+  title           String
+  spotifyUrl      String
+  youtubeUrl      String
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+// Group therapy sessions
+model TherapySession {
+  id              String   @id @default(cuid())
+  psychologistId  String
+  title           String
+  description     String?  @db.Text
+  type            TherapySessionType @default(ONE_ON_ONE)
+  maxParticipants Int      @default(1)
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  duration        Int
+  pricePerPerson  Int
+  status          TherapySessionStatus @default(SCHEDULED)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+  participants    SessionParticipant[]
+  payments        Payment[]
+
+  @@index([psychologistId])
+  @@index([date, startTime])
+}
+
+model SessionParticipant {
+  id        String   @id @default(cuid())
+  sessionId String
+  patientId String
+  status    ParticipantStatus @default(REGISTERED)
+  joinedAt  DateTime?
+  leftAt    DateTime?
+  createdAt DateTime @default(now())
+
+  session   TherapySession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  patient   Patient  @relation(fields: [patientId], references: [id])
+
+  @@unique([sessionId, patientId])
+  @@index([sessionId])
+  @@index([patientId])
+}
+
+// AI mental health screening
+model ScreeningAssessment {
+  id                  String   @id @default(cuid())
+  patientId           String
+  completedAt         DateTime?
+  responses           Json
+  aiSummary           String?  @db.Text
+  riskLevel           RiskLevel?
+  recommendedActions  String[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  patient             Patient  @relation(fields: [patientId], references: [id])
+
+  @@index([patientId])
+}
