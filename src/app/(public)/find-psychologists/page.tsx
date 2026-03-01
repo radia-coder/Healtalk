@@ -415,7 +415,7 @@ function FindPsychologistsPageContent() {
       <div className="relative max-w-[1400px] mx-auto px-4 md:px-8 py-12 pt-32">
         
         {/* Header Section */}
-        <div className="mb-8 rounded-3xl border border-[#D9D1C4] bg-[#fffefe]/80 px-6 py-6 shadow-[0_8px_24px_rgba(17,24,39,0.06)] backdrop-blur-sm">
+        <div className="mb-8">
           <h1 className="text-4xl font-bold text-[#121E0D] mb-2 font-display">
             Therapists {filters.location.length > 0 
               ? `in ${filters.location.length === 1 ? filters.location[0] : 'Multiple Locations'}`
