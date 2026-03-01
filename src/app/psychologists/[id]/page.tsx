@@ -376,7 +376,7 @@ export default async function PsychologistProfilePage({ params }: PageProps) {
       </div>
 
       {/* Footer Placeholder (since we can't reuse the complex one easily in this one-shot without seeing it) */}
-      <footer className="border-t border-slate-200 bg-white pt-16 pb-8 mt-20">
+      <footer className="border-t border-[#D9D1C4] bg-[#F6F2EA] pt-16 pb-8 mt-20">
           <div className="max-w-7xl mx-auto px-8">
               <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
                   <div className="col-span-2">
@@ -417,7 +417,7 @@ export default async function PsychologistProfilePage({ params }: PageProps) {
                       </ul>
                   </div>
               </div>
-              <div className="border-t border-slate-100 pt-8 flex justify-between items-center text-sm text-slate-400">
+              <div className="border-t border-[#E8DFD0] pt-8 flex justify-between items-center text-sm text-slate-400">
                   <p>© 2026 HealTalk. All rights reserved.</p>
                   <div className="flex gap-6">
                       <span>Privacy Policy</span>

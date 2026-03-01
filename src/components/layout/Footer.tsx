@@ -57,8 +57,11 @@ export default function Footer({ withShell = true, theme = "light" }: FooterProp
   const textColorPrimary = theme === "dark" ? "text-white" : "text-[#1f2937]";
   const textColorSecondary = theme === "dark" ? "text-white/70" : "text-[#667085]";
   const hoverColor = theme === "dark" ? "hover:text-white" : "hover:text-[#1f2937]";
-  const borderColor = theme === "dark" ? "border-white/10" : "border-[#e7eaf2]";
-  const iconBorder = theme === "dark" ? "border-white/20 bg-white/5 text-white" : "border-[#e7eaf2] bg-white text-[#5b61e7]";
+  const borderColor = theme === "dark" ? "border-white/10" : "border-[#D9D1C4]";
+  const iconBorder =
+    theme === "dark"
+      ? "border-white/20 bg-white/5 text-white"
+      : "border-[#D9D1C4] bg-[#fffefe] text-[#5b61e7]";
 
   const content = (
     <>
@@ -206,11 +209,11 @@ export default function Footer({ withShell = true, theme = "light" }: FooterProp
     return content;
   }
 
-  const bgClass = theme === "dark" ? "bg-[#061b0f]" : "bg-background";
-  const borderClass = theme === "dark" ? "border-[#061b0f]" : "border-[#e7eaf2]";
+  const bgClass = theme === "dark" ? "bg-[#061b0f]" : "bg-[#F6F2EA]";
+  const borderClass = theme === "dark" ? "border-[#061b0f]" : "border-[#D9D1C4]";
 
   return (
-    <section className="w-full bg-background pt-16 md:pt-20">
+    <section className="w-full bg-[#F6F2EA] pt-16 md:pt-20">
       <div className="w-full">
         <div className={`rounded-[40px] border ${borderClass} ${bgClass} overflow-hidden`}>
           {content}
