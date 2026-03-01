@@ -45,18 +45,18 @@ export default function WhyChooseHealTalk() {
             </p>
           </div>
 
-          {/* Confidential & Secure -> #fffbf9 */}
+          {/* Confidential & Secure */}
           <div 
-            className="group flex flex-col rounded-2xl border border-border/80 p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
-            style={{ backgroundColor: '#fffbf9' }}
+            className="group flex flex-col rounded-2xl border p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
+            style={{ backgroundColor: '#fffefe', borderColor: '#D9D1C4' }}
           >
-            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-border">
-              <Shield className="h-5 w-5 text-secondary" strokeWidth={1.5} />
+            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-[#C8D5FF] bg-[#EEF3FF]">
+              <Shield className="h-5 w-5 text-[#4A63F6]" strokeWidth={1.5} />
             </div>
-            <h3 className="mb-3 text-lg font-semibold text-foreground lg:text-xl">
+            <h3 className="mb-3 text-lg font-semibold text-[#121E0D] lg:text-xl">
               What you share stays private
             </h3>
-            <p className="text-sm leading-relaxed text-text-secondary">
+            <p className="text-sm leading-relaxed text-[#425234]">
               Your sessions are fully encrypted and HIPAA-compliant. Nothing
               is shared, sold, or seen by anyone outside your session.
             </p>
