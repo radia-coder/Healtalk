@@ -147,7 +147,7 @@ function LoginForm() {
   const isFormValid = formData.email.trim().length > 0 && formData.password.trim().length > 0;
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-16 font-sans">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-8 sm:py-12 font-sans">
       {/* 
          Main Card Container 
          Size: 800px x 696px
@@ -155,10 +155,10 @@ function LoginForm() {
          Radius: Rounded large (approx 2.5rem based on screenshot? Using 2.5rem / 40px)
          Shadow: Soft
       */}
-      <div className="w-[800px] h-[696px] bg-[#ebebff] rounded-[40px] shadow-sm flex flex-col items-center">
+      <div className="w-full max-w-[800px] bg-[#ebebff] rounded-[28px] sm:rounded-[40px] shadow-sm flex flex-col items-center px-5 py-8 sm:px-8 sm:py-10">
         
         {/* Top Area: Logo + Title */}
-        <div className="mt-[56px] flex flex-col items-center">
+        <div className="mt-2 sm:mt-4 flex flex-col items-center">
           {/* Logo Mark + Text */}
           <div className="flex items-center gap-2 mb-6">
             <Link href="/" className="inline-flex items-center">
@@ -172,13 +172,13 @@ function LoginForm() {
             </Link>
           </div>
 
-          <h1 className="text-[32px] font-bold text-[#111111] leading-tight">
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-[#111111] leading-tight text-center">
             Welcome to HealTalk
           </h1>
         </div>
 
         {/* Form Container */}
-        <div className="mt-[56px] w-[418px]">
+        <div className="mt-8 sm:mt-12 w-full max-w-[418px]">
           {errorMessage && (
             <div className="mb-4 text-center text-sm text-red-500 bg-red-50 p-3 rounded-xl border border-red-100">
               {errorMessage}
@@ -257,7 +257,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={!isFormValid || isSubmitting}
-              className={`mt-14 w-full h-[57px] rounded-xl flex items-center justify-center font-medium text-[16px] transition-colors
+              className={`mt-8 sm:mt-14 w-full h-[57px] rounded-xl flex items-center justify-center font-medium text-[16px] transition-colors
                 ${(!isFormValid || isSubmitting) 
                   ? 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed' 
                   : 'bg-black text-white hover:bg-gray-800'

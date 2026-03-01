@@ -3,9 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { ExternalLink, LogOut } from "lucide-react";
+import { ExternalLink, LogOut, Menu } from "lucide-react";
 
-export default function AdminHeader() {
+interface AdminHeaderProps {
+  onMobileMenuClick?: () => void;
+}
+
+export default function AdminHeader({ onMobileMenuClick }: AdminHeaderProps) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -26,15 +30,28 @@ export default function AdminHeader() {
   }, []);
 
   return (
-    <header className="h-14 border-b border-[var(--dash-border)] bg-[var(--dash-surface)] flex items-center justify-between px-6 shrink-0">
-      <Link
-        href="/"
-        target="_blank"
-        className="flex items-center gap-2 text-sm dash-muted hover:text-[var(--dash-text)] bg-[var(--dash-surface-elev)] hover:bg-[var(--dash-chip)] border border-[var(--dash-border)] px-3 py-1.5 rounded-lg transition-colors"
-      >
-        <ExternalLink className="w-3.5 h-3.5" />
-        View on site
-      </Link>
+    <header className="h-14 border-b border-[var(--dash-border)] bg-[var(--dash-surface)] flex items-center justify-between px-4 sm:px-6 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onMobileMenuClick && (
+          <button
+            type="button"
+            onClick={onMobileMenuClick}
+            className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--dash-border)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-elev)]"
+            aria-label="Open menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+        <Link
+          href="/"
+          target="_blank"
+          className="flex items-center gap-2 text-sm dash-muted hover:text-[var(--dash-text)] bg-[var(--dash-surface-elev)] hover:bg-[var(--dash-chip)] border border-[var(--dash-border)] px-3 py-1.5 rounded-lg transition-colors"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">View on site</span>
+          <span className="sm:hidden">Site</span>
+        </Link>
+      </div>
 
       <div className="relative" ref={dropdownRef}>
         <button

@@ -49,8 +49,8 @@ function VerifyEmailContent() {
   }, [token]);
 
   return (
-    <div className="flex flex-1 w-full items-center justify-center px-4 py-16 font-sans mb-16">
-      <div className="w-[800px] bg-[#ebebff] rounded-[40px] shadow-sm flex flex-col items-center py-12">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-8 sm:py-12 font-sans">
+      <div className="w-full max-w-[800px] bg-[#ebebff] rounded-[28px] sm:rounded-[40px] shadow-sm flex flex-col items-center px-5 py-8 sm:px-8 sm:py-10">
         <Link href="/" className="mb-6">
           <Image
             src="/images/New_Logo.png"
@@ -66,7 +66,7 @@ function VerifyEmailContent() {
         </h1>
 
         <div
-          className={`w-[418px] p-4 rounded-xl text-center text-sm border ${
+          className={`w-full max-w-[418px] p-4 rounded-xl text-center text-sm border ${
             state === "success"
               ? "bg-green-50 text-green-700 border-green-100"
               : state === "error"
@@ -102,7 +102,7 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F6F2EA] flex items-center justify-center">Loading...</div>}>
       <VerifyEmailContent />
     </Suspense>
   );

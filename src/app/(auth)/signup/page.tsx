@@ -91,7 +91,7 @@ export default function SignUpPage() {
     formData.confirmPassword.trim().length > 0;
 
   return (
-    <div className="flex flex-1 w-full items-center justify-center px-4 py-16 font-sans mb-16">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-8 sm:py-12 font-sans">
       {/* 
          Main Card Container 
          Size: 800px x 696px
@@ -99,10 +99,10 @@ export default function SignUpPage() {
          Radius: 40px
          Shadow: Soft
       */}
-      <div className="w-[800px] h-[696px] bg-[#ebebff] rounded-[40px] shadow-sm flex flex-col items-center">
+      <div className="w-full max-w-[800px] bg-[#ebebff] rounded-[28px] sm:rounded-[40px] shadow-sm flex flex-col items-center px-5 py-8 sm:px-8 sm:py-10">
         
         {/* Top Area: Logo + Title */}
-        <div className="mt-[40px] flex flex-col items-center">
+        <div className="mt-2 sm:mt-4 flex flex-col items-center">
           {/* Logo Mark + Text */}
           <div className="flex items-center gap-2 mb-4">
             <Link href="/" className="inline-flex items-center">
@@ -116,16 +116,16 @@ export default function SignUpPage() {
             </Link>
           </div>
 
-          <h1 className="text-[32px] font-bold text-[#111111] leading-tight mb-1">
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-[#111111] leading-tight mb-1 text-center">
             Create your HealTalk account
           </h1>
-          <p className="text-[16px] text-gray-500 font-medium">
+          <p className="text-[16px] text-gray-500 font-medium text-center">
             We’ll help you find the right therapist
           </p>
         </div>
 
         {/* Form Container */}
-        <div className="mt-[32px] w-[418px]">
+        <div className="mt-8 sm:mt-10 w-full max-w-[418px]">
           {errorMessage && (
             <div className="mb-4 text-center text-sm text-red-500 bg-red-50 p-3 rounded-xl border border-red-100">
               {errorMessage}

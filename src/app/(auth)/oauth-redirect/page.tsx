@@ -31,8 +31,8 @@ export default function OAuthRedirectPage() {
   }, [router]);
 
   return (
-    <div className="flex flex-1 w-full items-center justify-center px-4 py-16 font-sans mb-16">
-      <div className="w-[800px] bg-[#ebebff] rounded-[40px] shadow-sm flex flex-col items-center py-16">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-8 sm:py-12 font-sans">
+      <div className="w-full max-w-[800px] bg-[#ebebff] rounded-[28px] sm:rounded-[40px] shadow-sm flex flex-col items-center px-5 py-12 sm:px-8 sm:py-16">
         <Link href="/" className="mb-6">
           <Image
             src="/images/New_Logo.png"

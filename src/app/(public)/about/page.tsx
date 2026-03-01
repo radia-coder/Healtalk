@@ -70,11 +70,11 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[#F6F2EA] font-sans">
       {/* SECTION 1: HERO */}
-      <section className="pt-[160px] pb-[32px] px-10">
+      <section className="pt-28 sm:pt-36 lg:pt-[160px] pb-10 lg:pb-[32px] px-4 sm:px-6 lg:px-10">
         <div className="max-w-[1470px] mx-auto">
           {/* HEADLINE */}
           <div className="max-w-[960px] mx-auto text-center mb-[48px]">
-            <h1 className="font-logo text-[96px] leading-[1.1] tracking-[-0.04em] text-[#111827]">
+            <h1 className="font-logo text-[44px] sm:text-[64px] lg:text-[96px] leading-[1.1] tracking-[-0.04em] text-[#111827]">
               About HealTalk, for{" "}
               <span className="relative inline-block">
                 real
@@ -105,17 +105,17 @@ export default function AboutPage() {
       </section>
 
       {/* SECTION 2: STORY & VIDEO */}
-      <section className="py-[48px] px-10">
+      <section className="py-10 lg:py-[48px] px-4 sm:px-6 lg:px-10">
         <div className="max-w-[1470px] mx-auto">
            {/* STORY TEXT */}
            <div className="max-w-[960px] mx-auto text-center mb-[48px]">
-             <p className="font-heading font-bold text-[32px] leading-[1.15] tracking-[-1.28px] text-[#111827]">
+             <p className="font-heading font-bold text-2xl sm:text-[32px] leading-[1.15] tracking-[-1.28px] text-[#111827]">
                HealTalk started with one simple goal: make therapy easy to access, safe to use, and kind at every step. Choose a therapist, book a time, and meet by secure video. We protect your privacy in every session.
              </p>
            </div>
 
            {/* VIDEO CARD */}
-           <div className="w-full max-w-[1220px] mx-auto h-[400px] lg:h-[681px] rounded-[24px] overflow-hidden relative shadow-sm border border-black/5">
+           <div className="w-full max-w-[1220px] mx-auto h-[260px] sm:h-[400px] lg:h-[681px] rounded-[24px] overflow-hidden relative shadow-sm border border-black/5">
               <video
                 autoPlay
                 loop
@@ -127,18 +127,18 @@ export default function AboutPage() {
                 <source src="https://media.istockphoto.com/id/1324734893/video/diverse-business-people-having-meeting-in-board-room.mp4?s=mp4-640x640-is&k=20&c=vWj_5XqVzgLgZ7Z9zX8Z9zX8Z9zX8Z9zX8Z9zX8Z9zX8" type="video/mp4" />
               </video>
               <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                <span className="font-logo text-[80px] md:text-[120px] text-white tracking-tighter opacity-80">HealTalk</span>
+                <span className="font-logo text-[56px] sm:text-[80px] md:text-[120px] text-white tracking-tighter opacity-80">HealTalk</span>
               </div>
            </div>
         </div>
       </section>
 
       {/* SECTION 3: LEADERS (Refined Pixel-Perfect) */}
-      <section className="py-[48px] px-10">
+      <section className="py-10 lg:py-[48px] px-4 sm:px-6 lg:px-10">
         <div className="max-w-[1470px] mx-auto">
           {/* SECTION HEADER */}
           <div className="mb-[48px] text-center">
-             <h2 className="font-logo text-[48px] leading-[1.1] tracking-[-1.92px] text-[#111827]">
+             <h2 className="font-logo text-[36px] sm:text-[48px] leading-[1.1] tracking-[-1.92px] text-[#111827]">
                Meet our clinical leaders.
              </h2>
           </div>
@@ -164,7 +164,7 @@ export default function AboutPage() {
                     // - bg-[#effc5f]: Yellow highlight background
                     // - shadow-sm: Subtle shadow
                     className={cn(
-                        "relative w-full md:w-[430px] h-[600px] md:h-[668px] rounded-[24px] overflow-hidden cursor-pointer group transition-all duration-300 outline-none isolate shrink-0",
+                        "relative w-full md:w-[430px] h-[520px] md:h-[668px] rounded-[24px] overflow-hidden cursor-pointer group transition-all duration-300 outline-none isolate shrink-0",
                         "bg-[#f0f0f0] border border-black/5 shadow-sm", // Default neutral background
                         isActive && "bg-[#effc5f] border-[#effc5f]" // Active yellow background
                     )}

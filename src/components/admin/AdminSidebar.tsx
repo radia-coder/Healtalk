@@ -16,6 +16,7 @@ import {
   LogOut,
   ShieldCheck,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const groups = [
   {
@@ -55,7 +56,11 @@ const groups = [
   },
 ];
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+  className?: string;
+}
+
+export default function AdminSidebar({ className }: AdminSidebarProps) {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -64,7 +69,12 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-60 bg-[var(--dash-surface)] text-[var(--dash-text)] min-h-screen flex flex-col border-r border-[var(--dash-border)]">
+    <aside
+      className={cn(
+        "w-60 bg-[var(--dash-surface)] text-[var(--dash-text)] min-h-screen flex flex-col border-r border-[var(--dash-border)]",
+        className
+      )}
+    >
       <div className="p-5 border-b border-[var(--dash-border)]">
         <h1 className="text-lg font-bold dash-heading">Admin Panel</h1>
         <p className="text-xs dash-muted mt-0.5">HealTalk</p>

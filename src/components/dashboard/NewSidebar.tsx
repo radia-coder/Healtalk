@@ -77,7 +77,11 @@ const adminNavItems = [
   { label: "Settings", href: "/admin/dashboard/settings", icon: Settings },
 ];
 
-export function NewSidebar() {
+interface NewSidebarProps {
+  className?: string;
+}
+
+export function NewSidebar({ className }: NewSidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const isPatient = pathname?.startsWith("/patient");
@@ -114,7 +118,12 @@ export function NewSidebar() {
   }, [hasMessages]);
 
   return (
-    <aside className="w-[260px] h-screen fixed left-0 top-0 flex flex-col z-30 hidden lg:flex bg-[var(--dash-surface)] border-r border-[var(--dash-border)]">
+    <aside
+      className={cn(
+        "w-[260px] h-screen flex flex-col z-30 bg-[var(--dash-surface)] border-r border-[var(--dash-border)]",
+        className
+      )}
+    >
       <div className="h-[72px] flex items-center px-6 border-b border-[var(--dash-border)]">
         <Link href="/" className="flex items-center gap-2">
           <div className="font-bold text-2xl font-sans tracking-tight text-[var(--dash-text)]">
