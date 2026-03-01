@@ -64,7 +64,7 @@ export default function FeaturesAccordion({ features = defaultFeatures }: Featur
   const [activeImage, setActiveImage] = useState(features[0].image);
 
   return (
-    <section className="pt-8 pb-8 md:pt-12 md:pb-12 bg-background">
+    <section className="pt-8 pb-8 md:pt-12 md:pb-12 bg-[#F6F2EA]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center max-w-3xl mx-auto">
