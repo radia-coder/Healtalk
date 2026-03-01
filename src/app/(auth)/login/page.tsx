@@ -147,7 +147,7 @@ function LoginForm() {
   const isFormValid = formData.email.trim().length > 0 && formData.password.trim().length > 0;
 
   return (
-    <div className="flex flex-1 w-full items-center justify-center px-4 py-16 font-sans mb-16">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F6F2EA] px-4 py-16 font-sans">
       {/* 
          Main Card Container 
          Size: 800px x 696px
@@ -276,7 +276,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F6F2EA] flex items-center justify-center">Loading...</div>}>
       <LoginForm />
     </Suspense>
   );

@@ -68,7 +68,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="min-h-screen bg-[#F6F2EA] font-sans">
       {/* SECTION 1: HERO */}
       <section className="pt-[160px] pb-[32px] px-10">
         <div className="max-w-[1470px] mx-auto">

@@ -10,7 +10,7 @@ interface PodcastCardProps {
 
 export function PodcastCard({ episode }: PodcastCardProps) {
   return (
-    <div className="group flex flex-col gap-5 bg-[#FBF9F6] p-4 rounded-[18px] w-full md:w-[450px] h-auto md:h-[600px]">
+    <div className="group flex h-full w-full flex-col gap-5 rounded-[18px] bg-[#FBF9F6] p-4 md:min-h-[600px]">
       {/* Cover Block */}
       <div className="relative w-full aspect-square md:aspect-auto md:h-[396px] bg-[#d5f0c0] rounded-[16px] flex flex-col items-center justify-between py-6 overflow-hidden shrink-0">
         {/* Top Text */}
@@ -61,12 +61,12 @@ export function PodcastCard({ episode }: PodcastCardProps) {
         )}
 
         {/* Links */}
-        <div className="flex items-center gap-4 mt-auto pt-2">
+        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-2">
           <Link
             href={episode.spotifyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 group/link"
+            className="flex items-center gap-1.5 group/link min-w-0"
           >
             {/* Official Spotify logo */}
             <div className="w-6 h-6 rounded-full bg-[#1DB954] flex items-center justify-center">
@@ -83,7 +83,7 @@ export function PodcastCard({ episode }: PodcastCardProps) {
             href={episode.youtubeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 group/link"
+            className="flex items-center gap-1.5 group/link min-w-0"
           >
             {/* Official YouTube logo */}
             <div className="w-6 h-6 rounded-[5px] bg-[#FF0000] flex items-center justify-center">
