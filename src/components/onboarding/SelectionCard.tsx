@@ -30,16 +30,16 @@ export function SelectionCard({ label, selected, onToggle }: SelectionCardProps)
     <button
       onClick={onToggle}
       className={`
-        relative w-[490px] h-[50px] text-left rounded-[16px] pl-6
-        transition-all duration-200 group flex items-center
+        group relative flex min-h-[52px] w-full max-w-[490px] items-center rounded-[16px]
+        border px-5 py-3 text-left transition-all duration-200
         ${selected ? `${selectedBg} border-black/10` : `${baseBg} border-transparent ${hoverBg}`}
       `}
       style={{
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
       }}
     >
-      <div className="flex-1 flex items-center justify-between w-full pr-4">
-        <span className="font-figtree font-semibold text-black text-[14px]">
+      <div className="flex w-full flex-1 items-start justify-between gap-3 sm:items-center">
+        <span className="font-figtree text-[14px] font-semibold leading-snug text-black sm:text-[15px]">
           {label}
         </span>
 

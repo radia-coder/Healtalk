@@ -18,7 +18,7 @@ const STEPS = ["Reasons", "Focus", "Style", "Schedule"];
 
 function StepFlow({ current }: { current: 1 | 2 | 3 | 4 }) {
   return (
-    <div className="flex items-center justify-center mb-8">
+    <div className="mb-8 flex w-full items-center justify-center px-1">
       {STEPS.map((label, i) => {
         const num = i + 1;
         const isDone = num < current;
@@ -26,7 +26,7 @@ function StepFlow({ current }: { current: 1 | 2 | 3 | 4 }) {
 
         return (
           <div key={label} className="flex items-center">
-            <div className="flex flex-col items-center gap-1 w-[60px]">
+            <div className="flex w-[54px] flex-col items-center gap-1 sm:w-[60px]">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
                   isDone
@@ -82,17 +82,17 @@ export default function OnboardingStep2() {
   };
 
   return (
-    <div className="flex flex-col min-h-[80vh]">
+    <div className="flex min-h-screen flex-col bg-[#F6F2EA]">
       <OnboardingHeader progress={40} />
 
-      <div className="flex-1 flex flex-col items-center pt-[25px] pb-8 px-8 w-full">
-        <h1 className="text-[20px] font-medium font-figtree text-black text-center mb-6 leading-tight">
+      <div className="flex-1 flex w-full flex-col items-center px-4 pt-2 pb-28 sm:px-8">
+        <h1 className="mb-6 px-2 text-center font-figtree text-[20px] font-medium leading-tight text-black">
           What do you want to focus on?
         </h1>
 
         <StepFlow current={2} />
 
-        <div className="flex flex-col gap-4 items-center w-full">
+        <div className="flex w-full max-w-[560px] flex-col items-center gap-4">
           {GOAL_OPTIONS.map((option) => (
             <SelectionCard
               key={option}

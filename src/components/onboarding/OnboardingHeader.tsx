@@ -8,7 +8,7 @@ interface OnboardingHeaderProps {
 
 export function OnboardingHeader({ progress }: OnboardingHeaderProps) {
   return (
-    <div className="w-full max-w-xl mx-auto flex flex-col items-center gap-6 pt-2 pb-4">
+    <div className="mx-auto flex w-full max-w-[560px] flex-col items-center gap-5 px-4 pt-3 pb-4 sm:px-6">
       {/* HealTalk logo */}
       <div className="flex items-center justify-center">
         <Link href="/" className="inline-flex items-center">
@@ -23,7 +23,7 @@ export function OnboardingHeader({ progress }: OnboardingHeaderProps) {
       </div>
 
       {/* Progress Row */}
-      <div className="flex items-center gap-4 w-full px-4 mb-0">
+      <div className="mb-0 flex w-full items-center gap-3 sm:gap-4">
         {/* Progress Bar - Custom Pill */}
         <div className="h-[10px] flex-1 bg-[#c7c7ff] rounded-full overflow-hidden relative">
             {/* Filled portion - Dynamic */}
@@ -34,8 +34,12 @@ export function OnboardingHeader({ progress }: OnboardingHeaderProps) {
         </div>
 
         {/* User Icon Button */}
-        <button className="flex-shrink-0 w-[48px] h-[48px] bg-[#9393ff] rounded-xl flex items-center justify-center shadow-sm">
-          <User className="text-white w-6 h-6" />
+        <button
+          type="button"
+          aria-label="Profile"
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#9393ff] shadow-sm sm:h-12 sm:w-12"
+        >
+          <User className="h-5 w-5 text-white sm:h-6 sm:w-6" />
         </button>
       </div>
     </div>
