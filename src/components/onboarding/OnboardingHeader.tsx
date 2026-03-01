@@ -8,7 +8,7 @@ interface OnboardingHeaderProps {
 
 export function OnboardingHeader({ progress }: OnboardingHeaderProps) {
   return (
-    <div className="mx-auto flex w-full max-w-[560px] flex-col items-center gap-5 px-4 pt-10 pb-5 sm:px-6 sm:pt-12">
+    <div className="mx-auto flex w-full max-w-[560px] flex-col items-center gap-5 px-4 pt-14 pb-5 sm:px-6 sm:pt-16">
       {/* HealTalk logo */}
       <div className="flex items-center justify-center">
         <Link href="/" className="inline-flex items-center">
