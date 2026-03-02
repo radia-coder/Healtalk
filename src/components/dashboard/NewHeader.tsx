@@ -1,9 +1,8 @@
 "use client";
 
-import { Search, Bell, Menu, LogOut, Settings, User, MessageSquare, Calendar, ChevronRight, Sun, Moon, Monitor } from "lucide-react";
+import { Bell, Menu, LogOut, Settings, User, MessageSquare, Calendar, ChevronRight, Sun, Moon, Monitor } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -135,7 +134,7 @@ export function NewHeader({ onMobileMenuClick }: NewHeaderProps) {
 
   return (
     <header className="h-14 border-b flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20 bg-[var(--dash-surface)] border-[var(--dash-border)]">
-      <div className="flex items-center gap-4 flex-1 max-w-xl">
+      <div className="flex items-center gap-4 flex-1">
         <Button
           variant="ghost"
           size="icon"
@@ -144,14 +143,6 @@ export function NewHeader({ onMobileMenuClick }: NewHeaderProps) {
         >
           <Menu size={24} />
         </Button>
-
-        <div className="relative w-full max-w-[320px] hidden sm:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 dash-muted" size={18} />
-          <Input
-            placeholder="Search"
-            className="pl-10 h-10 rounded-full border-[var(--dash-border)] bg-[var(--dash-surface)] text-sm text-[var(--dash-text)] placeholder:text-[var(--dash-text-muted)] focus-visible:ring-2 focus-visible:ring-[var(--dash-primary)]"
-          />
-        </div>
       </div>
 
       <div className="flex items-center gap-3">
