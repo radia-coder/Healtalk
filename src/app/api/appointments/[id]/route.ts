@@ -75,6 +75,10 @@ export async function PATCH(
   const { data: body, error } = await parseJson(request, updateAppointmentSchema);
   if (error) return error;
   const { status, startTime, endTime, date } = body;
+  const hasStartTime = typeof startTime === "string";
+  const hasEndTime = typeof endTime === "string";
+  const isReschedule = hasStartTime || hasEndTime;
+  const hasStatusUpdate = typeof status === "string";
 
   const updateData: {
     status?: typeof status;
@@ -83,33 +87,152 @@ export async function PATCH(
     date?: Date;
   } = {};
 
-  if (status) {
+  if (!hasStatusUpdate && !isReschedule) {
+    return NextResponse.json(
+      { error: "No valid appointment updates were provided." },
+      { status: 400 }
+    );
+  }
+
+  if (hasStatusUpdate && isReschedule) {
+    return NextResponse.json(
+      { error: "Submit either a status update or a reschedule, not both." },
+      { status: 400 }
+    );
+  }
+
+  if (hasStatusUpdate) {
+    if (!isAdmin && status !== "CANCELLED") {
+      return NextResponse.json(
+        { error: "Only admins can set this appointment status." },
+        { status: 403 }
+      );
+    }
+
+    if (status === "CANCELLED") {
+      if (appointment.status !== "SCHEDULED") {
+        return NextResponse.json(
+          { error: "Only scheduled appointments can be cancelled." },
+          { status: 400 }
+        );
+      }
+
+      if (appointment.startTime <= new Date()) {
+        return NextResponse.json(
+          { error: "Cannot cancel an appointment that already started." },
+          { status: 400 }
+        );
+      }
+    }
+
     updateData.status = status;
   }
 
-  if (startTime) {
-    const parsed = new Date(startTime);
-    if (Number.isNaN(parsed.getTime())) {
-      return NextResponse.json({ error: "Invalid start time" }, { status: 400 });
+  if (isReschedule) {
+    if (!hasStartTime || !hasEndTime) {
+      return NextResponse.json(
+        { error: "Both start time and end time are required to reschedule." },
+        { status: 400 }
+      );
     }
-    updateData.startTime = parsed;
-    updateData.date = parsed;
-  }
 
-  if (endTime) {
-    const parsed = new Date(endTime);
-    if (Number.isNaN(parsed.getTime())) {
-      return NextResponse.json({ error: "Invalid end time" }, { status: 400 });
+    if (appointment.status !== "SCHEDULED") {
+      return NextResponse.json(
+        { error: "Only scheduled appointments can be rescheduled." },
+        { status: 400 }
+      );
     }
-    updateData.endTime = parsed;
-  }
 
-  if (date && !startTime) {
-    const parsed = new Date(date);
-    if (Number.isNaN(parsed.getTime())) {
-      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    const parsedStart = new Date(startTime);
+    const parsedEnd = new Date(endTime);
+
+    if (Number.isNaN(parsedStart.getTime()) || Number.isNaN(parsedEnd.getTime())) {
+      return NextResponse.json(
+        { error: "Invalid reschedule date/time." },
+        { status: 400 }
+      );
     }
-    updateData.date = parsed;
+
+    if (parsedStart >= parsedEnd) {
+      return NextResponse.json(
+        { error: "Appointment end time must be after start time." },
+        { status: 400 }
+      );
+    }
+
+    if (parsedStart <= new Date()) {
+      return NextResponse.json(
+        { error: "Appointments must be scheduled in the future." },
+        { status: 400 }
+      );
+    }
+
+    const originalDuration = Math.round(
+      (appointment.endTime.getTime() - appointment.startTime.getTime()) / 60000
+    );
+    const nextDuration = Math.round(
+      (parsedEnd.getTime() - parsedStart.getTime()) / 60000
+    );
+    if (nextDuration !== originalDuration) {
+      return NextResponse.json(
+        { error: `Rescheduled duration must stay ${originalDuration} minutes.` },
+        { status: 400 }
+      );
+    }
+
+    if (date) {
+      const parsedDate = new Date(date);
+      if (Number.isNaN(parsedDate.getTime())) {
+        return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+      }
+      if (parsedDate.toDateString() !== parsedStart.toDateString()) {
+        return NextResponse.json(
+          { error: "Date must match appointment start time." },
+          { status: 400 }
+        );
+      }
+    }
+
+    const [psychologistConflict, patientConflict] = await Promise.all([
+      prisma.appointment.findFirst({
+        where: {
+          id: { not: appointment.id },
+          psychologistId: appointment.psychologistId,
+          status: "SCHEDULED",
+          startTime: { lt: parsedEnd },
+          endTime: { gt: parsedStart },
+        },
+        select: { id: true },
+      }),
+      prisma.appointment.findFirst({
+        where: {
+          id: { not: appointment.id },
+          patientId: appointment.patientId,
+          status: "SCHEDULED",
+          startTime: { lt: parsedEnd },
+          endTime: { gt: parsedStart },
+        },
+        select: { id: true },
+      }),
+    ]);
+
+    if (psychologistConflict) {
+      return NextResponse.json(
+        { error: "Selected time is no longer available." },
+        { status: 409 }
+      );
+    }
+
+    if (patientConflict) {
+      return NextResponse.json(
+        { error: "You already have another appointment at this time." },
+        { status: 409 }
+      );
+    }
+
+    updateData.startTime = parsedStart;
+    updateData.endTime = parsedEnd;
+    updateData.date = parsedStart;
   }
 
   const updated = await prisma.appointment.update({

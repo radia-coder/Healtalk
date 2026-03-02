@@ -43,7 +43,10 @@ export async function POST(request: Request) {
 
   if (!appId || !appCertificate) {
     return NextResponse.json(
-      { error: "Agora configuration missing" },
+      {
+        error:
+          "Agora configuration missing. Set AGORA_APP_ID and AGORA_APP_CERTIFICATE.",
+      },
       { status: 500 }
     );
   }

@@ -11,6 +11,7 @@ import AgoraRTC, {
 import { Video, VideoOff, Mic, MicOff, Monitor, MonitorOff, Phone, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { fetchCsrfToken } from "@/lib/client-security";
 
 interface GroupVideoCallProps {
   sessionId: string;
@@ -36,15 +37,27 @@ export function GroupVideoCall({ sessionId, isHost, onLeave }: GroupVideoCallPro
   useEffect(() => {
     const initClient = async () => {
       try {
+        const csrfToken = await fetchCsrfToken();
+        if (!csrfToken) {
+          throw new Error("Security token missing. Please refresh and try again.");
+        }
+
         // Fetch Agora token
         const res = await fetch("/api/agora/token", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "x-csrf-token": csrfToken,
+          },
           body: JSON.stringify({ sessionId }),
         });
 
         if (!res.ok) {
-          throw new Error("Failed to get Agora token");
+          const payload = (await res.json().catch(() => null)) as
+            | { error?: string }
+            | null;
+          throw new Error(payload?.error || "Failed to get Agora token");
         }
 
         const { appId, token, channelName } = await res.json();

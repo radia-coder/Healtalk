@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GroupVideoCall } from "@/components/video/GroupVideoCall";
 import { Loader2 } from "lucide-react";
+import { fetchCsrfToken } from "@/lib/client-security";
 
 export default function SessionCallPage({
   params,
@@ -44,14 +45,28 @@ export default function SessionCallPage({
       }
 
       // Try to get Agora token to verify authorization
+      const csrfToken = await fetchCsrfToken();
+      if (!csrfToken) {
+        setError("Security token missing. Please refresh and try again.");
+        setLoading(false);
+        return;
+      }
+
       const tokenRes = await fetch("/api/agora/token", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
+        },
         body: JSON.stringify({ sessionId: id }),
       });
 
       if (!tokenRes.ok) {
-        setError("You are not authorized to join this session");
+        const payload = (await tokenRes.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        setError(payload?.error || "You are not authorized to join this session");
         setLoading(false);
         return;
       }

@@ -10,6 +10,7 @@ import AgoraRTC, {
 import { Mic, MicOff, Video, VideoOff, PhoneOff, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WaitingRoom } from "@/components/video/WaitingRoom";
+import { fetchCsrfToken } from "@/lib/client-security";
 
 // ─── Error code → human-readable message map ─────────────────────────────────
 
@@ -87,9 +88,18 @@ const formatElapsed = (seconds: number) => {
 async function fetchAgoraToken(
   appointmentId: string
 ): Promise<{ appId: string; token: string; channelName: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    throw new Error("Security token missing. Please refresh and try again.");
+  }
+
   const res = await fetch("/api/agora/token", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "x-csrf-token": csrfToken,
+    },
     body: JSON.stringify({ appointmentId }),
   });
 

@@ -19,17 +19,51 @@ export default function BookingCalendar({
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(propDate);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(propTime);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const buildSlotDateTime = (date: Date, label: string) => {
+    const [timePart, meridiem] = label.split(" ");
+    const [rawHours, rawMinutes] = timePart.split(":").map(Number);
+    let hours = rawHours;
+    if (meridiem === "PM" && hours < 12) hours += 12;
+    if (meridiem === "AM" && hours === 12) hours = 0;
+    return new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      hours,
+      rawMinutes,
+      0,
+      0
+    );
+  };
+
+  const isPastDay = (date: Date) => date.getTime() < today.getTime();
 
   // Mock generator for slots based on date
   const getSlotsForDate = (date: Date) => {
     // Randomized mock logic for demo
     const day = date.getDay();
-    if (day === 0 || day === 6) return ["10:00 AM", "11:00 AM"]; // Weekends fewer slots
-    return ["09:00 AM", "10:00 AM", "11:30 AM", "02:00 PM", "03:30 PM", "04:45 PM"];
+    const baseSlots =
+      day === 0 || day === 6
+        ? ["10:00 AM", "11:00 AM"] // Weekends fewer slots
+        : ["09:00 AM", "10:00 AM", "11:30 AM", "02:00 PM", "03:30 PM", "04:45 PM"];
+
+    if (
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+    ) {
+      return baseSlots.filter((slot) => buildSlotDateTime(date, slot) > now);
+    }
+
+    return baseSlots;
   };
 
   const handleDateClick = (day: number) => {
     const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    if (isPastDay(newDate)) return;
     setSelectedDate(newDate);
     setSelectedTime(undefined); // Reset time when date changes
     // Notify parent if needed, but usually we wait for time select
@@ -47,6 +81,9 @@ export default function BookingCalendar({
   };
 
   const prevMonth = () => {
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const currentMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    if (currentMonthStart <= thisMonthStart) return;
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
   };
 
@@ -56,6 +93,9 @@ export default function BookingCalendar({
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const currentMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+  const canGoPrevMonth = currentMonthStart > thisMonthStart;
 
   return (
     <div className="flex flex-col md:flex-row h-full gap-6">
@@ -66,7 +106,13 @@ export default function BookingCalendar({
                 {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
             </h3>
             <div className="flex gap-1">
-                <Button variant="ghost" size="icon" onClick={prevMonth} className="h-8 w-8 rounded-full hover:bg-slate-100">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={prevMonth}
+                    className="h-8 w-8 rounded-full hover:bg-slate-100"
+                    disabled={!canGoPrevMonth}
+                >
                     <ChevronLeft size={18} />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={nextMonth} className="h-8 w-8 rounded-full hover:bg-slate-100">
@@ -87,16 +133,19 @@ export default function BookingCalendar({
                 const day = i + 1;
                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
                 const isSelected = selectedDate?.toDateString() === date.toDateString();
-                const isToday = new Date().toDateString() === date.toDateString();
+                const isToday = now.toDateString() === date.toDateString();
+                const isDisabled = isPastDay(date);
 
                 return (
                     <button
                         key={day}
                         onClick={() => handleDateClick(day)}
+                        disabled={isDisabled}
                         className={`
                             h-9 w-9 rounded-full flex items-center justify-center text-sm transition-all
                             ${isSelected ? "bg-[#FC7D45] text-white font-bold shadow-md shadow-orange-100" : "hover:bg-slate-50 text-slate-700"}
                             ${isToday && !isSelected ? "border border-[#FC7D45] text-[#FC7D45] font-semibold" : ""}
+                            ${isDisabled ? "opacity-35 cursor-not-allowed hover:bg-transparent" : ""}
                         `}
                     >
                         {day}
@@ -117,7 +166,7 @@ export default function BookingCalendar({
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-2 max-h-[300px] scrollbar-thin scrollbar-thumb-slate-200">
                 {selectedDate ? (
-                    getSlotsForDate(selectedDate).map((time) => {
+                    getSlotsForDate(selectedDate).length > 0 ? getSlotsForDate(selectedDate).map((time) => {
                         const isSelected = selectedTime === time;
                         return (
                             <button
@@ -138,7 +187,11 @@ export default function BookingCalendar({
                                 {isSelected && <Check size={16} />}
                             </button>
                         )
-                    })
+                    }) : (
+                      <div className="flex flex-col items-center justify-center h-40 text-slate-400 text-sm text-center">
+                        No available time slots for this day.
+                      </div>
+                    )
                 ) : (
                     <div className="flex flex-col items-center justify-center h-40 text-slate-400 text-sm text-center">
                         <CalendarIcon size={32} className="mb-2 opacity-20" />
