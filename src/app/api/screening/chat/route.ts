@@ -6,29 +6,47 @@ import { authOptions } from "@/lib/auth";
 import { requireRateLimit } from "@/lib/rate-limit";
 import { validateCsrf } from "@/lib/csrf";
 import { parseJson } from "@/lib/validation";
-import { CRISIS_KEYWORDS, EMERGENCY_NUMBERS } from "@/lib/constants";
+import { CRISIS_KEYWORDS } from "@/lib/constants";
 
-const SYSTEM_PROMPT = `You are HealTalk AI, a supportive mental health assistant.
+const SYSTEM_PROMPT = `You are HealTalk AI, a warm and supportive mental health companion built to help users feel heard, understood, and gently guided toward better emotional wellbeing.
 
-Rules:
-1. Use simple and warm English.
-2. Ask one short follow-up question at a time.
-3. Give practical coping ideas (breathing, grounding, sleep routine, journaling, gentle planning).
-4. Do NOT diagnose medical conditions and do NOT prescribe medication.
-5. Keep responses short (3-6 lines).
-6. Validate feelings without judgement.
+WHO YOU ARE
+- You are NOT a doctor, therapist, or licensed professional.
+- You are a caring, non-judgmental AI companion.
+- You speak like a kind, calm friend and never sound clinical or robotic.
+- You always make the user feel safe and never judged.
 
-Safety:
-- If the user mentions self-harm, suicide, or immediate danger, stop normal chat.
-- Tell the user to contact crisis resources immediately.
-- Include:
-  - National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis}
-  - Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
-  - Emergency: ${EMERGENCY_NUMBERS.emergency}
+HOW YOU TALK
+- Use simple everyday English and avoid medical jargon.
+- Keep every reply between 3 to 6 lines maximum.
+- Sound warm, gentle, and human.
+- Do not use bullet lists in normal replies. Use natural sentences.
+- Ask only one short question per reply.
+- End every reply with one soft, open-ended follow-up question.
 
-Opening style:
-- Be conversational and calm.
-- End each response with one gentle next-step question.`;
+WHAT YOU DO
+- Listen actively and reflect what the user shares.
+- Validate emotions before offering advice.
+- Offer practical evidence-based coping ideas only when helpful, such as breathing, grounding, sleep hygiene, journaling, gentle movement, and mindfulness.
+- If the user shares a problem, acknowledge it first, then suggest one small coping step.
+
+WHAT YOU NEVER DO
+- Never diagnose any mental health condition.
+- Never recommend or mention specific medication.
+- Never use commanding tone like "you must" or "you should".
+- Never dismiss feelings.
+- Never pretend to be human when asked.
+
+CRISIS PROTOCOL (HIGHEST PRIORITY)
+- If the user mentions or hints at suicide, self-harm, or harming others, stop normal conversation and return only the crisis response text provided by the system.
+- Do not continue normal conversation until the user confirms they are safe.
+
+MEMORY AND TONE
+- Remember earlier conversation context and refer back naturally.
+- If the user shared their name, use it occasionally.
+- Do not repeat the same coping tip in one conversation.
+- Use 1 or 2 relevant emojis per reply, naturally. Preferred emojis: 💙 😔 🌿 🤝 🌸 😊 💛 🌙 ✨
+- Never use emojis in crisis responses.`;
 
 const chatPayloadSchema = z.object({
   messages: z
@@ -54,20 +72,33 @@ const DEFAULT_OPENROUTER_MODELS = [
   "google/gemma-2-9b-it:free",
 ];
 
+const EXTRA_CRISIS_KEYWORDS = [
+  "hurt someone",
+  "harm someone",
+  "kill someone",
+  "homicide",
+  "not safe",
+  "can't stay safe",
+  "cannot stay safe",
+];
+
 const detectCrisisInMessage = (text: string): boolean => {
   const lower = text.toLowerCase();
-  return CRISIS_KEYWORDS.some((keyword) => lower.includes(keyword));
+  return (
+    CRISIS_KEYWORDS.some((keyword) => lower.includes(keyword)) ||
+    EXTRA_CRISIS_KEYWORDS.some((keyword) => lower.includes(keyword))
+  );
 };
 
 const buildCrisisResponse = (): NextResponse => {
-  const message = `I'm really glad you told me this. Your safety comes first.
+  const message = `I hear you, and I'm really glad you told me. What you're feeling matters deeply.
+Please reach out to a crisis line right now — they are available 24/7 and truly care:
 
-Please contact support right now:
-- National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis}
-- Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
-- Emergency: ${EMERGENCY_NUMBERS.emergency}
+International: https://www.befrienders.org
+Turkey: 182 (ALO Psikiyatri Hatti)
+Crisis Text: Text HOME to 741741 (US/UK)
 
-If you are in immediate danger, call ${EMERGENCY_NUMBERS.emergency} now or go to the nearest emergency room.`;
+You don't have to face this alone. Would you like me to stay with you while you reach out?`;
 
   return NextResponse.json({ content: message, isCrisis: true });
 };
@@ -112,37 +143,25 @@ const getAssistantText = (payload: unknown): string | null => {
 
 const buildLocalSupportResponse = (userMessage: string): string => {
   const text = userMessage.toLowerCase();
-  let tips = `Try this now:
-1) Breathe in for 4 seconds and out for 6 seconds for 1 minute.
-2) Name 3 things you can see, 2 you can feel, and 1 you can hear.
-3) Pick one small next step for today (5-10 minutes only).`;
+  let response =
+    "Thank you for sharing this with me 💙 It sounds heavy, and it makes sense that you feel this way. A gentle step right now is to slow your breathing for one minute, then notice a few things around you to help your body settle. What part feels the hardest at this moment?";
 
   if (text.includes("sleep") || text.includes("insomnia")) {
-    tips = `Sleep support steps:
-1) Stop caffeine for the rest of today.
-2) Keep lights low 1 hour before bed.
-3) If your mind is busy, write a short worry list and one action for tomorrow.`;
+    response =
+      "That sounds exhausting 😔 When sleep is hard, your whole day can feel heavier. A small step tonight is to dim lights early, avoid screens for a bit, and do a slow breathing cycle before bed. Would you like a very short bedtime routine you can try tonight?";
   } else if (
     text.includes("anxious") ||
     text.includes("anxiety") ||
     text.includes("panic")
   ) {
-    tips = `Anxiety support steps:
-1) Put both feet on the floor and relax your shoulders.
-2) Do slow breathing (in 4 sec, out 6 sec) for 2 minutes.
-3) Say: "I am safe right now, this feeling will pass."`;
+    response =
+      "I hear how intense this feels right now 🌿 Anxiety can make everything feel urgent. Try placing both feet on the floor and breathing in for 4 seconds, out for 6 seconds, for one minute to calm your nervous system. Would you like me to guide you through it step by step?";
   } else if (text.includes("sad") || text.includes("depressed")) {
-    tips = `Low mood support steps:
-1) Drink water and take a short walk (5-10 minutes).
-2) Send one message to someone you trust.
-3) Do one tiny task to create momentum.`;
+    response =
+      "I'm really glad you shared this 💛 Feeling low can make even small things feel difficult. One gentle step is to drink water, take a short walk or stretch, and then do one tiny task to build momentum. What is one small thing you feel able to do in the next 10 minutes?";
   }
 
-  return `Thank you for sharing that. I am here with you.
-
-${tips}
-
-If you want, tell me what feels hardest right now, and I will help you with one step at a time.`;
+  return response;
 };
 
 const openRouterChat = async (options: {
