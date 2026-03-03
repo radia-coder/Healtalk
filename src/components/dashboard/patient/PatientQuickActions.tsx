@@ -37,7 +37,8 @@ const actions = [
     href: "/patient/dashboard/messages",
     color: "text-[var(--dash-warning)]",
     bg: "bg-[var(--dash-warning-soft)] border border-[var(--dash-warning)]",
-    desc: "Chat with doctor"
+    desc: "Chat with doctor",
+    desktopFullWidth: true,
   },
 ];
 
@@ -48,7 +49,10 @@ export function PatientQuickActions() {
         <Link
           key={i}
           href={action.href}
-          className="dash-card p-5 transition-colors group flex flex-col justify-between h-full min-h-[200px] relative hover:border-[var(--dash-border-strong)]"
+          className={cn(
+            "dash-card p-5 transition-colors group flex flex-col justify-between h-full min-h-[200px] relative hover:border-[var(--dash-border-strong)]",
+            action.desktopFullWidth ? "xl:col-span-3" : ""
+          )}
         >
           {action.badge && (
             <div className="absolute top-3 right-3 bg-[var(--dash-primary-soft)] border border-[var(--dash-primary)] text-[var(--dash-primary)] text-[10px] font-semibold px-2 py-1 rounded-full">

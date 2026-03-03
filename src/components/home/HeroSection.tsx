@@ -37,7 +37,7 @@ export default function HeroSection() {
         <section 
             className="relative w-full flex flex-col justify-center overflow-hidden z-0"
             style={{
-                height: '835px', // Exact desktop height
+                height: '884px', // Exact desktop height
                 margin: '0',
                 padding: '0',
                 top: '0',

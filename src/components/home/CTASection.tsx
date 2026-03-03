@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function CTASection() {
   return (
-    <section className="relative w-full min-h-[620px] sm:min-h-[720px] lg:h-[834px] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-[620px] sm:min-h-[720px] lg:h-[890px] flex items-center justify-center overflow-hidden">
       {/* Video Background */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
