@@ -1,77 +1,80 @@
-# API Routes — HealTalk
+# API Keys and Services Guide
 
-This folder documents every API endpoint in the HealTalk platform. HealTalk uses Next.js App Router API routes located in `src/app/api/`.
+This folder explains every API key and secret used by HealTalk.
 
-## API Groups
+Goal: easy English, step by step, and clear setup for local + production.
 
-### Authentication (`/api/auth`)
-- Register new users (patient or psychologist)
-- Login with email/password or OAuth (Google)
-- Forgot password, reset password, email verification
-- NextAuth session handling
+## First: What is Required for Production
 
-### Appointments (`/api/appointments`)
-- Create, read, update, cancel appointments
-- Appointment status: pending → confirmed → completed / cancelled
-- Patient books with psychologist, psychologist confirms
+You must set these before going live:
 
-### Sessions / Video (`/api/sessions`, `/api/agora`)
-- Agora RTC token generation for video calls
-- Start and end session records
-- Session notes and summaries
+- `DATABASE_URL`
+- `NEXTAUTH_URL`
+- `NEXTAUTH_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `AGORA_APP_ID`
+- `AGORA_APP_CERTIFICATE`
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+- `NEXT_PUBLIC_APP_URL`
+- `OPENROUTER_API_KEY` (recommended) or `GROQ_API_KEY`
 
-### Psychologists (`/api/psychologists`, `/api/psychologist`)
-- List and filter psychologists (specialization, price, rating, location)
-- Get single psychologist profile
-- Psychologist applies for approval, admin approves
+Strongly recommended:
 
-### Messages (`/api/messages`)
-- Send and receive messages between patient and psychologist
-- Conversation threads, read receipts
-- Real-time via polling or WebSocket
+- `OPENROUTER_MODEL`
+- `OPENROUTER_FALLBACK_MODEL`
+- `GROQ_API_KEY` (fallback)
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+- `CSRF_SECRET`
+- `CRON_SECRET`
+- UploadThing key (`UPLOADTHING_TOKEN` or `UPLOADTHING_SECRET`)
 
-### User (`/api/user`)
-- Get and update user profile
-- Upload profile picture (UploadThing)
-- Change password
+Optional (only if you use Supabase auth migration):
 
-### Admin (`/api/admin`)
-- Approve/reject psychologist applications
-- Platform stats: total users, appointments, revenue
-- Manage hospitals
+- `SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-### AI Chatbot (`/api/chatbot`)
-- Mental health chatbot powered by Google Gemini (or fallback to Groq/OpenRouter)
-- Provides supportive responses, not medical advice
+## What Each Service Does
 
-### Notifications (`/api/notifications`)
-- In-app notifications for appointment updates, messages
-- Cron job for appointment reminder emails (`/api/cron/send-reminders`)
+- OpenRouter/Groq/Gemini: AI chat support.
+- Google OAuth: sign in with Google.
+- Resend: verification and reminder emails.
+- UploadThing: upload files and profile images.
+- Agora: video call tokens.
+- Upstash Redis: production rate limiting.
+- NextAuth + security secrets: login sessions and request protection.
+- Supabase: optional auth migration support.
 
-### Progress (`/api/progress`)
-- Mood tracking data (patient logs daily mood)
-- Goal setting and progress records
+## Files in This Folder
 
-### Screening (`/api/screening`)
-- Mental health screening questionnaires (PHQ-9, GAD-7)
-- Results stored per patient
+- `openrouter.md` - Main AI provider setup
+- `groq.md` - AI fallback provider setup
+- `grok.md` - Alias file that points to Groq setup
+- `gemini.md` - Legacy/optional AI key notes
+- `google-oauth.md` - Google login setup
+- `resend.md` - Email setup
+- `uploadthing.md` - File upload setup
+- `agora.md` - Video call token setup
+- `upstash-redis.md` - Rate limit setup
+- `nextauth.md` - Auth secrets setup
+- `security-secrets.md` - CSRF and cron secrets
+- `supabase.md` - Optional Supabase keys setup
+- `routes/README.md` - One markdown file per API route in `src/app/api`
 
-### Uploads (`/api/uploads`, `/api/uploadthing`)
-- File uploads via UploadThing
-- Profile images, psychologist certificates
+## Quick Missing-Keys Check
 
-## Environment Variables Needed
+Use this command locally:
 
+```bash
+for v in DATABASE_URL NEXTAUTH_URL NEXTAUTH_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET AGORA_APP_ID AGORA_APP_CERTIFICATE RESEND_API_KEY EMAIL_FROM NEXT_PUBLIC_APP_URL OPENROUTER_API_KEY; do
+  if [ -z "${!v}" ]; then echo "MISSING: $v"; else echo "OK: $v"; fi
+done
 ```
-DATABASE_URL=
-NEXTAUTH_SECRET=
-NEXTAUTH_URL=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-AGORA_APP_ID=
-AGORA_APP_CERTIFICATE=
-GEMINI_API_KEY=
-RESEND_API_KEY=
-UPLOADTHING_SECRET=
-UPLOADTHING_APP_ID=
-```
+
+If any required key shows `MISSING`, add it in local `.env` and in DigitalOcean App Settings.

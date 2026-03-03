@@ -1,0 +1,30 @@
+# Environment Variables Guide
+
+## Core Required
+
+- `DATABASE_URL`
+- `NEXTAUTH_URL`
+- `NEXTAUTH_SECRET`
+- `NEXT_PUBLIC_APP_URL`
+
+## Auth and Login
+
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+
+## Video
+
+- `AGORA_APP_ID`
+- `AGORA_APP_CERTIFICATE`
+
+## Email
+
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+
+## AI
+
+- `OPENROUTER_API_KEY`
+- `OPENROUTER_MODEL`
+- `OPENROUTER_FALLBACK_MODEL`
+- `GROQ_API_KEY` (optional fallback)

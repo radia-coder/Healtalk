@@ -112,7 +112,7 @@ export default function AdminDashboardHome() {
       <div className="space-y-8">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white">Overview</h1>
             <p className="text-sm text-gray-500 mt-1">Platform overview and management</p>
             {isLoading && <p className="text-xs text-gray-500 mt-2">Loading metrics...</p>}
             {error && <p className="text-xs text-red-400 mt-2">{error}</p>}

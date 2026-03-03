@@ -44,7 +44,7 @@ const getInitials = (firstName: string, lastName: string) => {
 
 
 const psychologistNavItems = [
-  { label: "Dashboard", href: "/psychologist/dashboard", icon: LayoutDashboard },
+  { label: "Overview", href: "/psychologist/dashboard", icon: LayoutDashboard },
   { label: "Appointments", href: "/psychologist/dashboard/appointments", icon: CalendarDays },
   { label: "Sessions", href: "/psychologist/dashboard/sessions", icon: Video },
   { label: "Patients", href: "/psychologist/dashboard/patients", icon: Users },
@@ -54,18 +54,17 @@ const psychologistNavItems = [
 ];
 
 const patientNavItems = [
-  { label: "Dashboard", href: "/patient/dashboard", icon: LayoutDashboard },
+  { label: "Overview", href: "/patient/dashboard", icon: LayoutDashboard },
   { label: "Appointments", href: "/patient/dashboard/appointments", icon: CalendarDays },
   { label: "Sessions", href: "/patient/dashboard/sessions", icon: Video },
   { label: "Messages", href: "/patient/dashboard/messages", icon: MessageSquare },
   { label: "AI Assistant", href: "/patient/dashboard/screening", icon: Brain },
-  { label: "Favorites", href: "/patient/dashboard/favorites", icon: Users },
   { label: "Payments", href: "/patient/dashboard/payments", icon: BarChart2 },
   { label: "Settings", href: "/patient/dashboard/settings", icon: Settings },
 ];
 
 const adminNavItems = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Psychologists", href: "/admin/dashboard/psychologists", icon: ShieldCheck },
   { label: "Appointments", href: "/admin/dashboard/appointments", icon: CalendarDays },
   { label: "Payments", href: "/admin/dashboard/payments", icon: CreditCard },

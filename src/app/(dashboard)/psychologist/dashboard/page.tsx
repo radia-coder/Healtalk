@@ -9,7 +9,7 @@ export default function PsychologistDashboardHome() {
     <DashboardLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold dash-heading">Dashboard</h1>
+          <h1 className="text-2xl font-bold dash-heading">Overview</h1>
           <p className="text-sm dash-muted mt-1">Overview of your practice activity and appointments.</p>
         </div>
 

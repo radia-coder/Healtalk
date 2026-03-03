@@ -1,74 +1,78 @@
-# Pages — HealTalk
+# Pages Documentation
 
-This folder documents every page in HealTalk and its purpose. Pages live in `src/app/` using the Next.js App Router.
+We documented our app routes with one markdown file per route file.
+We wrote this in simple English so we can review route behavior quickly.
 
-## Public Pages (no login required)
+## Coverage
 
-| Route                       | Description                                               |
-|-----------------------------|-----------------------------------------------------------|
-| `/`                         | Homepage — hero, features, how it works, testimonials, FAQ|
-| `/find-psychologists`       | Search and filter psychologists                           |
-| `/psychologists/[id]`       | Individual psychologist profile with booking option       |
-| `/about`                    | About HealTalk, mission, team                             |
-| `/contact`                  | Contact form                                              |
-| `/resources`                | Mental health guides, blog posts, podcasts                |
-| `/privacy`                  | Privacy policy                                            |
-| `/terms`                    | Terms of service                                          |
-| `/hipaa`                    | HIPAA compliance information                              |
+- Total documented route files: **66**
+- Folder: `docs/pages/files/`
 
-## Auth Pages
+## Route Files
 
-| Route                       | Description                                               |
-|-----------------------------|-----------------------------------------------------------|
-| `/login`                    | Email/password or Google OAuth login                      |
-| `/signup`                   | Register as patient or psychologist                       |
-| `/forgot-password`          | Request password reset email                              |
-| `/reset-password`           | Set new password via email link                           |
-| `/verify-email`             | Email verification after signup                           |
-| `/oauth-redirect`           | Handles Google OAuth redirect                             |
-
-## Patient Dashboard (`/patient/...`)
-
-| Route                       | Tab / Section                                             |
-|-----------------------------|-----------------------------------------------------------|
-| `/patient/dashboard`        | Overview — upcoming appointments, stats                   |
-| `/patient/dashboard/appointments` | Book and manage appointments                      |
-| `/patient/dashboard/sessions`     | Past video sessions and notes                     |
-| `/patient/dashboard/messages`     | Chat with psychologist                            |
-| `/patient/dashboard/mood`         | Mood tracker and history chart                    |
-| `/patient/dashboard/progress`     | Progress goals                                    |
-| `/patient/dashboard/settings`     | Profile and account settings                      |
-
-## Psychologist Dashboard (`/psychologist/...`)
-
-| Route                       | Tab / Section                                             |
-|-----------------------------|-----------------------------------------------------------|
-| `/psychologist/dashboard`   | Overview — earnings, upcoming appointments                |
-| `/psychologist/dashboard/appointments` | Manage and confirm appointments               |
-| `/psychologist/dashboard/patients`     | Patient list and history                      |
-| `/psychologist/dashboard/earnings`     | Revenue and payout info                       |
-| `/psychologist/dashboard/availability` | Set weekly schedule                           |
-| `/psychologist/dashboard/messages`     | Chat with patients                            |
-| `/psychologist/dashboard/profile`      | Edit credentials, bio, and pricing            |
-
-## Admin Dashboard (`/admin/...`)
-
-| Route                       | Tab / Section                                             |
-|-----------------------------|-----------------------------------------------------------|
-| `/admin/dashboard`          | Platform overview — users, appointments, revenue          |
-| `/admin/dashboard/approvals`| Review and approve psychologist applications              |
-| `/admin/dashboard/hospitals`| Add and manage partner hospitals                          |
-| `/admin/dashboard/analytics`| Growth trends and platform performance                    |
-
-## Onboarding
-
-| Route                       | Description                                               |
-|-----------------------------|-----------------------------------------------------------|
-| `/onboarding`               | Multi-step onboarding for new psychologists               |
-| `/onboarding/final`         | Completion step after onboarding                          |
-
-## Checkout
-
-| Route                       | Description                                               |
-|-----------------------------|-----------------------------------------------------------|
-| `/checkout`                 | Payment page when booking a paid appointment              |
+- [`/` (error)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/error.md)
+- [`/` (error)](/Users/maahir/Downloads/HealTalk/docs/pages/files/app/error.md)
+- [`/` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/layout.md)
+- [`/` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/layout.md)
+- [`/` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/layout.md)
+- [`/` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/app/layout.md)
+- [`/` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/page.md)
+- [`/about` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/about/page.md)
+- [`/admin` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/admin/page.md)
+- [`/admin/dashboard` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/page.md)
+- [`/admin/dashboard/appointments` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/appointments/page.md)
+- [`/admin/dashboard/blog` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/blog/page.md)
+- [`/admin/dashboard/hospitals` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/hospitals/page.md)
+- [`/admin/dashboard/patients` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/patients/page.md)
+- [`/admin/dashboard/payments` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/payments/page.md)
+- [`/admin/dashboard/psychologists` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/psychologists/page.md)
+- [`/admin/dashboard/reports` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/reports/page.md)
+- [`/admin/dashboard/reviews` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/reviews/page.md)
+- [`/admin/dashboard/settings` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/admin/dashboard/settings/page.md)
+- [`/admin/login` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/admin/login/page.md)
+- [`/checkout` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/checkout/page.md)
+- [`/contact` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/contact/page.md)
+- [`/find-psychologists` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/find-psychologists/page.md)
+- [`/forgot-password` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/forgot-password/page.md)
+- [`/hipaa` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/hipaa/page.md)
+- [`/login` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/login/page.md)
+- [`/oauth-redirect` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/oauth-redirect/page.md)
+- [`/onboarding` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/steps/layout.md)
+- [`/onboarding` (layout)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/layout.md)
+- [`/onboarding/step-1` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/steps/step-1/page.md)
+- [`/onboarding/step-2` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/steps/step-2/page.md)
+- [`/onboarding/step-3` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/steps/step-3/page.md)
+- [`/onboarding/step-4` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/onboarding/steps/step-4/page.md)
+- [`/patient/dashboard` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/page.md)
+- [`/patient/dashboard/appointments` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/appointments/page.md)
+- [`/patient/dashboard/favorites` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/favorites/page.md)
+- [`/patient/dashboard/messages` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/messages/page.md)
+- [`/patient/dashboard/payments` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/payments/page.md)
+- [`/patient/dashboard/progress` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/progress/page.md)
+- [`/patient/dashboard/screening` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/screening/page.md)
+- [`/patient/dashboard/sessions` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/sessions/page.md)
+- [`/patient/dashboard/settings` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/patient/dashboard/settings/page.md)
+- [`/petient/dashboard` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/petient/dashboard/page.md)
+- [`/privacy` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/privacy/page.md)
+- [`/psychologist/[id]` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/psychologist/[id]/page.md)
+- [`/psychologist/dashboard` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/page.md)
+- [`/psychologist/dashboard/appointments` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/appointments/page.md)
+- [`/psychologist/dashboard/earnings` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/earnings/page.md)
+- [`/psychologist/dashboard/messages` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/messages/page.md)
+- [`/psychologist/dashboard/patients` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/patients/page.md)
+- [`/psychologist/dashboard/profile` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/profile/page.md)
+- [`/psychologist/dashboard/report` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/report/page.md)
+- [`/psychologist/dashboard/sessions` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/sessions/page.md)
+- [`/psychologist/dashboard/settings` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/psychologist/dashboard/settings/page.md)
+- [`/psychologists/[id]` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/psychologists/[id]/page.md)
+- [`/reset-password` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/reset-password/page.md)
+- [`/resources` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/resources/page.md)
+- [`/resources/blog` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/resources/blog/page.md)
+- [`/resources/blog/[id]` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/resources/blog/[id]/page.md)
+- [`/resources/podcasts` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/resources/podcasts/page.md)
+- [`/shared/call/[appointmentId]` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/shared/call/[appointmentId]/page.md)
+- [`/shared/call/session/[sessionId]` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/dashboard/shared/call/session/[sessionId]/page.md)
+- [`/signup` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/signup/page.md)
+- [`/supabase-auth/callback` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/supabase-auth/callback/page.md)
+- [`/terms` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/public/terms/page.md)
+- [`/verify-email` (page)](/Users/maahir/Downloads/HealTalk/docs/pages/files/auth/verify-email/page.md)

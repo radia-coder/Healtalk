@@ -1,39 +1,24 @@
-# HealTalk — Documentation
+# HealTalk Documentation
 
-A complete mental health consultation platform connecting patients with licensed psychologists through secure video consultations and messaging.
+We documented this project folder-by-folder using simple English and "we" style.
 
-**Tech Stack**: Next.js 15 · TypeScript · Tailwind CSS v4 · shadcn/ui · PostgreSQL · Prisma · NextAuth · Agora RTC · Google Gemini · Resend
+## Main Sections
 
----
+- [AI Docs](/Users/maahir/Downloads/HealTalk/docs/ai/README.md)
+- [API Docs](/Users/maahir/Downloads/HealTalk/docs/api/README.md)
+- [API Route Files](/Users/maahir/Downloads/HealTalk/docs/api/routes/README.md)
+- [Components Docs](/Users/maahir/Downloads/HealTalk/docs/components/README.md)
+- [Pages Docs](/Users/maahir/Downloads/HealTalk/docs/pages/README.md)
+- [Database Docs](/Users/maahir/Downloads/HealTalk/docs/database/README.md)
+- [Supabase Docs](/Users/maahir/Downloads/HealTalk/docs/supabase/README.md)
+- [Deployment Docs](/Users/maahir/Downloads/HealTalk/docs/deployment/README.md)
+- [Design Docs](/Users/maahir/Downloads/HealTalk/docs/design/README.md)
+- [Email Docs](/Users/maahir/Downloads/HealTalk/docs/email/README.md)
+- [Project History](/Users/maahir/Downloads/HealTalk/docs/project-history/README.md)
+- [Future Plans](/Users/maahir/Downloads/HealTalk/docs/future/README.md)
 
-## Docs Folders
+## Documentation Style We Follow
 
-| Folder            | What's Inside                                               |
-|-------------------|-------------------------------------------------------------|
-| `api/`            | All API routes — auth, appointments, messages, AI, admin   |
-| `components/`     | UI components — navbar, dashboard, video, chatbot, carousel |
-| `database/`       | PostgreSQL + Prisma setup, schema models, common commands   |
-| `deployment/`     | Deploy to GCP, Hostinger, PM2, Nginx, SSL setup             |
-| `design/`         | Color palette, typography, layout specs, component styles   |
-| `ai/`             | Gemini chatbot setup, alternative AI providers              |
-| `email/`          | Resend email system, templates, cron reminders              |
-| `testing/`        | Jest unit tests, manual flow tests, test results            |
-| `features/`       | All features — booking, video, messaging, mood, screening   |
-| `guides/`         | Getting started, env vars, third-party service setup        |
-| `pages/`          | Every page/route in the app and what it does                |
-| `project-history/`| Phase reviews, implementation summaries, graduation report  |
-| `scripts/`        | deploy.sh, npm scripts, cron jobs                           |
-| `future/`         | Planned features and ideas for future versions              |
-
----
-
-## Quick Start
-
-```bash
-npm install
-cp .env.example .env   # fill in your keys
-npx prisma migrate dev --name init
-npm run dev
-```
-
-See `guides/README.md` for full setup instructions.
+- We write in easy English.
+- We explain what each file does and why we use it.
+- We keep one markdown file per route/component file where possible.

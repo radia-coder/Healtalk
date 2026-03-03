@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, MessageCircle, Heart, ArrowRight, Video, Brain } from "lucide-react";
+import { Calendar, MessageCircle, ArrowRight, Video, Brain } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -38,14 +38,6 @@ const actions = [
     color: "text-[var(--dash-warning)]",
     bg: "bg-[var(--dash-warning-soft)] border border-[var(--dash-warning)]",
     desc: "Chat with doctor"
-  },
-  {
-    label: "View Favorites",
-    icon: Heart,
-    href: "/patient/dashboard/favorites",
-    color: "text-[var(--dash-danger)]",
-    bg: "bg-[var(--dash-danger-soft)] border border-[var(--dash-danger)]",
-    desc: "Saved doctors"
   },
 ];
 

@@ -1,43 +1,17 @@
-# Project History — HealTalk
+# Project History
 
-This folder tracks the history of the HealTalk project — phases, reviews, presentations, and key decisions.
+We wrote our project history in clear stages so we can explain how HealTalk evolved.
 
-## Project Timeline
+## History Files
 
-### Phase 1 — Foundation
-- Next.js 15 app setup with TypeScript and Tailwind CSS v4
-- shadcn/ui component library integrated
-- Homepage built: hero, features, how it works, testimonials (infinite carousel), FAQ (accordion)
-- Authentication pages: login, signup, forgot password
-- Find Psychologists page with search and filters
-- Psychologist profile page
-- Basic patient and psychologist dashboards (UI only)
+- [History 1 — Foundation](/Users/maahir/Downloads/HealTalk/docs/project-history/history-1-foundation.md)
+- [History 2 — Features](/Users/maahir/Downloads/HealTalk/docs/project-history/history-2-features.md)
+- [History 3 — UI and Mobile](/Users/maahir/Downloads/HealTalk/docs/project-history/history-3-ui-mobile.md)
+- [History 4 — AI Assistant](/Users/maahir/Downloads/HealTalk/docs/project-history/history-4-ai.md)
+- [Detailed Notes](/Users/maahir/Downloads/HealTalk/docs/project-history/notes.md)
+- [Phase 2 Review](/Users/maahir/Downloads/HealTalk/docs/project-history/phase-2-review.md)
+- [Full Report](/Users/maahir/Downloads/HealTalk/docs/project-history/report.md)
 
-### Phase 2 — Backend Integration
-- PostgreSQL + Prisma schema created
-- Full auth system: NextAuth, email verification, Google OAuth
-- Appointment booking API and flow
-- Agora RTC video call integration
-- Messaging system between patient and psychologist
-- Email system with Resend (templates for all email types)
-- AI chatbot with Google Gemini
-- Mood tracker and progress goals APIs
-- Mental health screening (PHQ-9, GAD-7)
-- Admin dashboard APIs
+## How We Keep This Updated
 
-### Phase 3 — Polish and Deployment
-- Performance fixes (code splitting, lazy loading)
-- Hydration error fixes
-- Sentry error monitoring added
-- Deployment to Google Cloud VM with PM2 and Nginx
-- Pre-launch checklist completed
-
-## Files in This Folder
-
-- `README.md` — This file (timeline overview)
-- `phase-2-review.md` — Detailed review of Phase 2 work
-- `implementation-summary.md` — What was built in each phase
-- `report.md` — Full project report (academic/graduation)
-- `requirements.md` — Original requirements document
-- `graduation-presentation.md` — Presentation outline for graduation
-- `notes.md` — Miscellaneous notes from development
+When we finish a major phase, we add one new history file with what we changed and why.
