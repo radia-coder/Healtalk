@@ -23,12 +23,12 @@ const actions = [
     badge: "New"
   },
   {
-    label: "Mental Health Check",
+    label: "AI Assistant",
     icon: Brain,
     href: "/patient/dashboard/screening",
     color: "text-[var(--dash-success)]",
     bg: "bg-[var(--dash-success-soft)] border border-[var(--dash-success)]",
-    desc: "AI screening",
+    desc: "AI support chat",
     badge: "New"
   },
   {

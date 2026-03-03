@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import Groq from "groq-sdk";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { requireRateLimit } from "@/lib/rate-limit";
@@ -8,39 +7,27 @@ import { validateCsrf } from "@/lib/csrf";
 import { parseJson } from "@/lib/validation";
 import { CRISIS_KEYWORDS, EMERGENCY_NUMBERS } from "@/lib/constants";
 
-// ─── System prompt ────────────────────────────────────────────────────────────
-// This is sent as the hidden "system" message to the AI on every request.
-// It defines the chatbot's persona, the screening flow, and risk levels.
-const SYSTEM_PROMPT = `You are a compassionate mental health screening assistant for HealTalk, a teletherapy platform.
+const SYSTEM_PROMPT = `You are HealTalk AI, a supportive mental health assistant.
 
-Your role:
-1. Ask 8-10 screening questions to assess the user's mental health
-2. Ask one question at a time
-3. Be warm, non-judgmental, and empathetic
-4. Cover these areas: mood, anxiety, sleep, relationships, stress, trauma history, substance use, suicidal thoughts
-5. After all questions, provide a brief summary and risk level assessment
+Rules:
+1. Use simple and warm English.
+2. Ask one short follow-up question at a time.
+3. Give practical coping ideas (breathing, grounding, sleep routine, journaling, gentle planning).
+4. Do NOT diagnose medical conditions and do NOT prescribe medication.
+5. Keep responses short (3-6 lines).
+6. Validate feelings without judgement.
 
-Risk Levels:
-- LOW: Mild symptoms, can benefit from therapy
-- MEDIUM: Moderate symptoms, therapy recommended
-- HIGH: Severe symptoms, therapy strongly recommended
-- CRISIS: Immediate risk, provide crisis resources
+Safety:
+- If the user mentions self-harm, suicide, or immediate danger, stop normal chat.
+- Tell the user to contact crisis resources immediately.
+- Include:
+  - National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis}
+  - Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
+  - Emergency: ${EMERGENCY_NUMBERS.emergency}
 
-Important:
-- If user mentions self-harm or suicide, immediately provide crisis resources
-- Keep responses concise (2-3 sentences)
-- Be conversational, not clinical
-- Validate feelings without minimizing concerns
-- After 8-10 questions, summarize and provide risk assessment
-
-Crisis Resources:
-- National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis}
-- Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
-- Emergency: ${EMERGENCY_NUMBERS.emergency}
-
-Keep track of which questions you've asked. Start with: "Hi! I'm here to help match you with the right therapist. I'll ask a few questions about how you've been feeling. This will only take 5 minutes. Shall we begin?"`;
-
-// ─── Schema ───────────────────────────────────────────────────────────────────
+Opening style:
+- Be conversational and calm.
+- End each response with one gentle next-step question.`;
 
 const chatPayloadSchema = z.object({
   messages: z
@@ -54,34 +41,91 @@ const chatPayloadSchema = z.object({
     .max(80),
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
 
-/**
- * Returns true if the message text contains any crisis keyword.
- * We check the most-recent user message so we can short-circuit with a safe response.
- */
-function detectCrisisInMessage(text: string): boolean {
+const detectCrisisInMessage = (text: string): boolean => {
   const lower = text.toLowerCase();
   return CRISIS_KEYWORDS.some((keyword) => lower.includes(keyword));
-}
+};
 
-/**
- * Builds the pre-canned crisis response that bypasses the AI entirely.
- * This guarantees a fast, safe reply when a user is in distress.
- */
-function buildCrisisResponse(): NextResponse {
-  const message = `I'm very concerned about what you've shared. Your safety is the top priority. Please reach out to these resources immediately:
+const buildCrisisResponse = (): NextResponse => {
+  const message = `I'm really glad you told me this. Your safety comes first.
 
-📞 National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis} (available 24/7)
-💬 Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
-🚨 Emergency: ${EMERGENCY_NUMBERS.emergency}
+Please contact support right now:
+- National Suicide Prevention Lifeline: ${EMERGENCY_NUMBERS.crisis}
+- Crisis Text Line: Text HOME to ${EMERGENCY_NUMBERS.text}
+- Emergency: ${EMERGENCY_NUMBERS.emergency}
 
-If you're in immediate danger, please call ${EMERGENCY_NUMBERS.emergency} or go to your nearest emergency room. You don't have to face this alone.`;
+If you are in immediate danger, call ${EMERGENCY_NUMBERS.emergency} now or go to the nearest emergency room.`;
 
   return NextResponse.json({ content: message, isCrisis: true });
-}
+};
 
-// ─── Route ────────────────────────────────────────────────────────────────────
+const getAssistantText = (payload: unknown): string | null => {
+  if (!payload || typeof payload !== "object") return null;
+  const parsed = payload as {
+    choices?: Array<{
+      message?: {
+        content?: string | Array<{ type?: string; text?: string }>;
+      };
+    }>;
+  };
+
+  const content = parsed.choices?.[0]?.message?.content;
+  if (typeof content === "string" && content.trim()) return content;
+
+  if (Array.isArray(content)) {
+    const joined = content
+      .map((item) => (item?.type === "text" ? item.text || "" : ""))
+      .join("")
+      .trim();
+    return joined || null;
+  }
+
+  return null;
+};
+
+const openRouterChat = async (options: {
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+  messages: ChatMessage[];
+}) => {
+  const response = await fetch(`${options.baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${options.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: options.model,
+      messages: options.messages,
+      temperature: 0.6,
+      max_tokens: 500,
+    }),
+    cache: "no-store",
+  });
+
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    const errorMessage =
+      (payload as { error?: { message?: string } | string } | null)?.error;
+    const message =
+      typeof errorMessage === "string"
+        ? errorMessage
+        : errorMessage?.message || "OpenRouter request failed";
+    throw new Error(message);
+  }
+
+  const text = getAssistantText(payload);
+  if (!text) {
+    throw new Error("OpenRouter returned an empty response");
+  }
+  return text;
+};
 
 export async function POST(request: Request) {
   try {
@@ -104,16 +148,24 @@ export async function POST(request: Request) {
     const { data, error } = await parseJson(request, chatPayloadSchema);
     if (error) return error;
 
-    const groqApiKey = process.env.GROQ_API_KEY;
-    if (!groqApiKey) {
+    const openRouterApiKey = process.env.OPENROUTER_API_KEY?.trim();
+    if (!openRouterApiKey) {
       return NextResponse.json(
         { error: "AI service is not configured" },
         { status: 500 }
       );
     }
 
-    // Check the last user message for crisis keywords before hitting the AI.
-    // If detected, return a pre-written safe response immediately.
+    const openRouterBaseUrl =
+      process.env.OPENROUTER_BASE_URL?.trim() ||
+      "https://openrouter.ai/api/v1";
+    const primaryModel =
+      process.env.OPENROUTER_MODEL?.trim() ||
+      "meta-llama/llama-3.3-70b-instruct:free";
+    const fallbackModel =
+      process.env.OPENROUTER_FALLBACK_MODEL?.trim() ||
+      "meta-llama/llama-3.1-8b-instruct:free";
+
     const lastUserMessage =
       data.messages.filter((m) => m.role === "user").slice(-1)[0]?.content ?? "";
 
@@ -121,38 +173,33 @@ export async function POST(request: Request) {
       return buildCrisisResponse();
     }
 
-    // Stream the AI response back to the client so the UI can render it token-by-token.
-    const groq = new Groq({ apiKey: groqApiKey });
-    const completion = await groq.chat.completions.create({
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...data.messages,
-      ],
-      model: "llama-3.1-8b-instant",
-      temperature: 0.7,
-      max_tokens: 500,
-      stream: true,
-    });
+    const modelMessages: ChatMessage[] = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...data.messages,
+    ];
 
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of completion) {
-            const text = chunk.choices[0]?.delta?.content || "";
-            if (text) {
-              controller.enqueue(encoder.encode(text));
-            }
-          }
-          controller.close();
-        } catch (streamError) {
-          console.error("Screening stream error:", streamError);
-          controller.error(streamError);
-        }
-      },
-    });
+    let assistantText: string;
+    try {
+      assistantText = await openRouterChat({
+        apiKey: openRouterApiKey,
+        baseUrl: openRouterBaseUrl,
+        model: primaryModel,
+        messages: modelMessages,
+      });
+    } catch (primaryError) {
+      if (!fallbackModel || fallbackModel === primaryModel) {
+        throw primaryError;
+      }
 
-    return new Response(stream, {
+      assistantText = await openRouterChat({
+        apiKey: openRouterApiKey,
+        baseUrl: openRouterBaseUrl,
+        model: fallbackModel,
+        messages: modelMessages,
+      });
+    }
+
+    return new Response(assistantText, {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
       },
@@ -161,7 +208,7 @@ export async function POST(request: Request) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Screening chat error:", message);
     return NextResponse.json(
-      { error: "Failed to process screening chat request" },
+      { error: "Failed to process AI chat request" },
       { status: 500 }
     );
   }
