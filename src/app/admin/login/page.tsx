@@ -35,6 +35,13 @@ const getSessionRole = async () => {
   return (session?.user as { role?: string } | undefined)?.role;
 };
 
+const getPostLoginPath = (role?: string) => {
+  if (role === "ADMIN") return "/admin/dashboard";
+  if (role === "PSYCHOLOGIST") return "/psychologist/dashboard";
+  if (role === "PATIENT") return "/patient/dashboard";
+  return null;
+};
+
 function AdminLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,8 +62,9 @@ function AdminLoginForm() {
 
     (async () => {
       const role = await getSessionRole();
-      if (isActive && role === "ADMIN") {
-        router.replace("/admin/dashboard");
+      const redirectPath = getPostLoginPath(role);
+      if (isActive && redirectPath) {
+        router.replace(redirectPath);
       }
     })();
 
@@ -82,8 +90,9 @@ function AdminLoginForm() {
         });
         if (result && !result.error) {
           const role = await getSessionRole();
-          if (role === "ADMIN") {
-            router.push("/admin/dashboard");
+          const redirectPath = getPostLoginPath(role);
+          if (redirectPath) {
+            router.push(redirectPath);
             return;
           }
         }
@@ -106,15 +115,15 @@ function AdminLoginForm() {
     }
 
     const role = await getSessionRole();
-
-    if (role !== "ADMIN") {
-      setRuntimeError("This login is for administrators only.");
-      await signOut({ redirect: false });
-      setIsSubmitting(false);
+    const redirectPath = getPostLoginPath(role);
+    if (redirectPath) {
+      router.push(redirectPath);
       return;
     }
 
-    router.push("/admin/dashboard");
+    setRuntimeError("We could not determine your account role. Please try again.");
+    await signOut({ redirect: false });
+    setIsSubmitting(false);
   };
 
   const isFormValid = email.trim().length > 0 && password.trim().length > 0;
