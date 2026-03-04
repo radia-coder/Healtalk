@@ -13,19 +13,15 @@ export default function PsychologistDashboardHome() {
           <p className="text-sm dash-muted mt-1">Overview of your practice activity and appointments.</p>
         </div>
 
-        <div className="flex flex-col xl:flex-row gap-6">
-          <div className="flex-1 space-y-6 min-w-0">
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-6 items-start">
+          <div className="space-y-6 min-w-0">
             <KPIGrid />
             <UpcomingAppointments />
           </div>
 
-          <div className="w-full xl:w-[380px] space-y-6 flex flex-col">
-            <div className="h-[340px]">
-              <PatientsOverviewChart />
-            </div>
-            <div className="flex-1 min-h-[400px]">
-              <AppointmentRequests />
-            </div>
+          <div className="w-full xl:w-[380px] min-w-0 space-y-6">
+            <PatientsOverviewChart />
+            <AppointmentRequests />
           </div>
         </div>
       </div>

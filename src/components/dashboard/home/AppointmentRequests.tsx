@@ -78,7 +78,7 @@ export function AppointmentRequests() {
   }, []);
 
   return (
-    <div className="dash-card p-6 h-full flex flex-col">
+    <div className="dash-card p-6 min-h-[320px] flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold dash-heading text-lg">Recent Bookings</h3>
         <Link

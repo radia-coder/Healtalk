@@ -370,6 +370,7 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
     setIsJoining(true);
     setConnectionState("connecting");
     setErrorMessage(null);
+    let slowJoinNoticeTimer: ReturnType<typeof setTimeout> | null = null;
 
     try {
       // Leave any previous session before starting a new one.
@@ -410,15 +411,16 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
         setNetworkQuality
       );
 
-      await Promise.race([
-        newClient.join(appId, channelName, token, userAccount),
-        new Promise<never>((_, reject) =>
-          setTimeout(
-            () => reject(new Error("Timed out while joining call. Please try again.")),
-            15_000
-          )
-        ),
-      ]);
+      slowJoinNoticeTimer = setTimeout(
+        () => {
+          setErrorMessage("Joining is taking longer than usual. Please wait...");
+        },
+        15_000
+      );
+      await newClient.join(appId, channelName, token, userAccount);
+      clearTimeout(slowJoinNoticeTimer);
+      slowJoinNoticeTimer = null;
+      setErrorMessage(null);
 
       if (audioTrack && videoTrack) {
         await publishLocalTracks(
@@ -449,6 +451,9 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
         setErrorMessage("Unable to join call");
       }
     } finally {
+      if (slowJoinNoticeTimer) {
+        clearTimeout(slowJoinNoticeTimer);
+      }
       setIsJoining(false);
     }
   };

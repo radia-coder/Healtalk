@@ -76,7 +76,7 @@ export function WaitingRoom({
               variant="outline"
               className="h-12 w-12 rounded-full border-white/20 text-white hover:bg-white/10"
               onClick={onToggleMic}
-              disabled={!videoTrack || !!errorMessage}
+              disabled={!videoTrack}
             >
               {isMicMuted ? <MicOff size={18} /> : <Mic size={18} />}
             </Button>
@@ -85,7 +85,7 @@ export function WaitingRoom({
               variant="outline"
               className="h-12 w-12 rounded-full border-white/20 text-white hover:bg-white/10"
               onClick={onToggleCamera}
-              disabled={!videoTrack || !!errorMessage}
+              disabled={!videoTrack}
             >
               {isCameraOff ? <VideoOff size={18} /> : <Video size={18} />}
             </Button>
@@ -93,7 +93,7 @@ export function WaitingRoom({
               type="button"
               className="h-12 px-6 rounded-full bg-[#5B6CFF] hover:bg-[#4a5ae0]"
               onClick={onJoin}
-              disabled={isJoining || !videoTrack || !!errorMessage}
+              disabled={isJoining || !videoTrack}
             >
               {isJoining ? "Joining..." : "Join Session"}
             </Button>

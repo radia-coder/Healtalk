@@ -51,6 +51,17 @@ export async function POST(request: Request) {
     );
   }
 
+  const agoraKeyPattern = /^[a-fA-F0-9]{32}$/;
+  if (!agoraKeyPattern.test(appId) || !agoraKeyPattern.test(appCertificate)) {
+    return NextResponse.json(
+      {
+        error:
+          "Invalid Agora credentials format. Use 32-character hex AGORA_APP_ID and AGORA_APP_CERTIFICATE values.",
+      },
+      { status: 500 }
+    );
+  }
+
   let channelName: string;
   let isAuthorized = false;
   let isHost = false;
@@ -134,6 +145,16 @@ export async function POST(request: Request) {
     AGORA_TOKEN_TTL_SECONDS,
     AGORA_TOKEN_TTL_SECONDS
   );
+
+  if (!token) {
+    return NextResponse.json(
+      {
+        error:
+          "Failed to generate Agora token. Verify AGORA_APP_ID and AGORA_APP_CERTIFICATE are from the same Agora project.",
+      },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({
     appId,
