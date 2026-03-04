@@ -10,7 +10,6 @@ import AgoraRTC, {
 import { Mic, MicOff, Video, VideoOff, PhoneOff, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WaitingRoom } from "@/components/video/WaitingRoom";
-import { fetchCsrfToken } from "@/lib/client-security";
 
 // ─── Error code → human-readable message map ─────────────────────────────────
 
@@ -88,11 +87,27 @@ const formatElapsed = (seconds: number) => {
 async function fetchAgoraToken(
   appointmentId: string
 ): Promise<{ appId: string; token: string; channelName: string }> {
-  const csrfToken = await fetchCsrfToken();
+  const csrfController = new AbortController();
+  const csrfTimeout = setTimeout(() => csrfController.abort(), 8_000);
+  const csrfResponse = await fetch("/api/security/csrf", {
+    credentials: "include",
+    signal: csrfController.signal,
+  }).finally(() => clearTimeout(csrfTimeout));
+
+  if (!csrfResponse.ok) {
+    throw new Error("Unable to get security token. Please refresh and try again.");
+  }
+
+  const csrfData = (await csrfResponse.json().catch(() => null)) as
+    | { csrfToken?: string }
+    | null;
+  const csrfToken = csrfData?.csrfToken || null;
   if (!csrfToken) {
     throw new Error("Security token missing. Please refresh and try again.");
   }
 
+  const tokenController = new AbortController();
+  const tokenTimeout = setTimeout(() => tokenController.abort(), 12_000);
   const res = await fetch("/api/agora/token", {
     method: "POST",
     credentials: "include",
@@ -101,7 +116,8 @@ async function fetchAgoraToken(
       "x-csrf-token": csrfToken,
     },
     body: JSON.stringify({ appointmentId }),
-  });
+    signal: tokenController.signal,
+  }).finally(() => clearTimeout(tokenTimeout));
 
   if (!res.ok) {
     const data = await res.json().catch(() => null);
@@ -368,12 +384,17 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
         clientRef.current = null;
       }
 
+      let audioTrack = localAudioTrack;
+      let videoTrack = localVideoTrack;
+
       // Ensure local tracks are ready before joining.
-      if (!localAudioTrack || !localVideoTrack) {
-        const [audioTrack, videoTrack] =
+      if (!audioTrack || !videoTrack) {
+        const [nextAudioTrack, nextVideoTrack] =
           await AgoraRTC.createMicrophoneAndCameraTracks();
-        setLocalAudioTrack(audioTrack);
-        setLocalVideoTrack(videoTrack);
+        audioTrack = nextAudioTrack;
+        videoTrack = nextVideoTrack;
+        setLocalAudioTrack(nextAudioTrack);
+        setLocalVideoTrack(nextVideoTrack);
       }
 
       const { appId, token, channelName } = await fetchAgoraToken(appointmentId);
@@ -389,13 +410,21 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
         setNetworkQuality
       );
 
-      await newClient.join(appId, channelName, token, userAccount);
+      await Promise.race([
+        newClient.join(appId, channelName, token, userAccount),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Timed out while joining call. Please try again.")),
+            15_000
+          )
+        ),
+      ]);
 
-      if (localAudioTrack && localVideoTrack) {
+      if (audioTrack && videoTrack) {
         await publishLocalTracks(
           newClient,
-          localAudioTrack,
-          localVideoTrack,
+          audioTrack,
+          videoTrack,
           isMicMuted,
           isCameraOff
         );
@@ -408,6 +437,10 @@ export function VideoCall({ appointmentId, userAccount, userName }: VideoCallPro
       setConnectionState("failed");
 
       if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          setErrorMessage("Request timed out while joining. Please try again.");
+          return;
+        }
         const knownMessage = Object.entries(AGORA_ERROR_MESSAGES).find(
           ([code]) => error.message.includes(code)
         )?.[1];

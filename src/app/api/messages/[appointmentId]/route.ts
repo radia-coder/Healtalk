@@ -8,9 +8,29 @@ import { requireRateLimit } from "@/lib/rate-limit";
 import { validateCsrf } from "@/lib/csrf";
 import { buildDirectConversationId, parseDirectConversationId } from "@/lib/messaging";
 
-const messageSchema = z.object({
-  content: z.string().min(1),
-});
+const messageSchema = z
+  .object({
+    content: z.string().optional().default(""),
+    attachment: z
+      .object({
+        url: z.string().url(),
+        type: z.string().max(255).nullable().optional(),
+        name: z.string().max(255).nullable().optional(),
+      })
+      .nullable()
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    const hasContent = Boolean(data.content?.trim());
+    const hasAttachment = Boolean(data.attachment?.url);
+    if (!hasContent && !hasAttachment) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["content"],
+        message: "Message content or attachment is required",
+      });
+    }
+  });
 
 interface RouteParams {
   params: Promise<{ appointmentId: string }>;
@@ -184,13 +204,17 @@ export async function POST(request: Request, { params }: RouteParams) {
   const { data, error } = await parseJson(request, messageSchema);
   if (error) return error;
   const content = data.content.trim();
+  const attachment = data.attachment ?? null;
 
   const message = await prisma.message.create({
     data: {
       patientId: context.patientId,
       psychologistId: context.psychologistId,
       senderId: session.user.id,
-      content,
+      content: content || (attachment ? "Attachment" : ""),
+      attachmentUrl: attachment?.url || null,
+      attachmentType: attachment?.type || null,
+      attachmentName: attachment?.name || null,
     },
   });
 

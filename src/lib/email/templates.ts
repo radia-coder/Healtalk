@@ -337,7 +337,7 @@ export function appointment1hReminderEmail(data: {
     </div>
 
     <p style="text-align: center;">
-      <a href="${APP_URL}/shared/call/session/${data.appointmentId}" class="button">Join Session</a>
+      <a href="${APP_URL}/shared/call/${data.appointmentId}" class="button">Join Session</a>
     </p>
 
     <p style="margin-top: 30px;">You can join the call up to 5 minutes early.</p>
@@ -348,7 +348,7 @@ export function appointment1hReminderEmail(data: {
   return {
     subject: `🔔 Appointment in 1 Hour with Dr. ${data.psychologistName}`,
     html: emailLayout(content),
-    text: `Hi ${data.patientName},\n\nYour appointment with Dr. ${data.psychologistName} starts in 1 hour at ${data.time}!\n\nJoin session: ${APP_URL}/shared/call/session/${data.appointmentId}\n\nBest regards,\nThe HealTalk Team`
+    text: `Hi ${data.patientName},\n\nYour appointment with Dr. ${data.psychologistName} starts in 1 hour at ${data.time}!\n\nJoin session: ${APP_URL}/shared/call/${data.appointmentId}\n\nBest regards,\nThe HealTalk Team`
   };
 }
 

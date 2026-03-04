@@ -41,6 +41,20 @@ type UploadAttachment = {
   name?: string;
 };
 
+const fetchWithTimeout = async (
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  timeoutMs = 10_000
+) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 const formatTime = (value: string) =>
   new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -100,7 +114,11 @@ export function MessageThread({ appointmentId }: { appointmentId: string }) {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/messages/${appointmentId}`);
+        const res = await fetchWithTimeout(
+          `/api/messages/${appointmentId}`,
+          { credentials: "include" },
+          10_000
+        );
         if (!res.ok) {
           const data = await res.json().catch(() => null);
           throw new Error(data?.error || "Failed to load messages");
@@ -230,39 +248,56 @@ export function MessageThread({ appointmentId }: { appointmentId: string }) {
       return;
     }
 
-    if (!attachmentToSend && content) {
-      try {
-        const csrfRes = await fetch("/api/security/csrf", {
-          credentials: "include",
-        });
-        const csrfData = await csrfRes.json();
-        const csrfToken = csrfData?.csrfToken as string | undefined;
+    try {
+      const csrfRes = await fetchWithTimeout(
+        "/api/security/csrf",
+        { credentials: "include" },
+        8_000
+      );
+      const csrfData = (await csrfRes.json().catch(() => null)) as
+        | { csrfToken?: string }
+        | null;
+      const csrfToken = csrfData?.csrfToken;
 
-        const res = await fetch(`/api/messages/${appointmentId}`, {
+      const res = await fetchWithTimeout(
+        `/api/messages/${appointmentId}`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
           },
           credentials: "include",
-          body: JSON.stringify({ content }),
-        });
+          body: JSON.stringify({
+            content,
+            attachment: attachmentToSend
+              ? {
+                  url: attachmentToSend.url,
+                  type: attachmentToSend.type || null,
+                  name: attachmentToSend.name || null,
+                }
+              : undefined,
+          }),
+        },
+        10_000
+      );
 
-        if (res.ok) {
-          const saved = await res.json();
-          setMessages((prev) =>
-            prev.map((item) => (item.id === tempId ? saved : item))
-          );
-          return;
-        }
+      if (res.ok) {
+        const saved = await res.json();
+        setMessages((prev) =>
+          prev.map((item) => (item.id === tempId ? saved : item))
+        );
+        return;
+      }
 
-        const data = await res.json().catch(() => null);
-        setSendError(data?.error || response?.error || "Failed to send message");
-      } catch {
+      const data = await res.json().catch(() => null);
+      setSendError(data?.error || response?.error || "Failed to send message");
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        setSendError("Request timed out. Please try again.");
+      } else {
         setSendError("Failed to send message");
       }
-    } else {
-      setSendError(response?.error || "Failed to send message");
     }
 
     setMessages((prev) => prev.filter((item) => item.id !== tempId));
