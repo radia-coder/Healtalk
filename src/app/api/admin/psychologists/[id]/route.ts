@@ -9,6 +9,10 @@ import { validateCsrf } from "@/lib/csrf";
 import { createAuditLog } from "@/lib/audit";
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import {
+  isSupabaseAuthMigrationEnabled,
+  updateSupabaseUserPassword,
+} from "@/lib/supabase-auth";
 
 const updateSchema = z.object({
   status: z.enum(["PENDING", "APPROVED", "REJECTED", "SUSPENDED"]),
@@ -212,6 +216,8 @@ export async function PUT(
           id: true,
           name: true,
           email: true,
+          authProvider: true,
+          supabaseAuthId: true,
         },
       },
     },
@@ -371,6 +377,26 @@ export async function PUT(
       },
     });
   });
+
+  if (
+    body.password &&
+    isSupabaseAuthMigrationEnabled() &&
+    existing.user?.supabaseAuthId
+  ) {
+    const sync = await updateSupabaseUserPassword(
+      existing.user.supabaseAuthId,
+      body.password
+    );
+
+    if (!sync.ok && sync.error) {
+      console.warn("Supabase password sync failed:", sync.error);
+    } else if (existing.user.authProvider === "NEXTAUTH") {
+      await prisma.user.update({
+        where: { id: existing.userId },
+        data: { authProvider: "HYBRID" },
+      });
+    }
+  }
 
   await createAuditLog({
     actorId: session.user.id,

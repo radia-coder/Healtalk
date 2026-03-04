@@ -20,8 +20,8 @@ const authErrorMessages: Record<string, string> = {
   CredentialsSignin: "That email or password looks wrong.",
   AccessDenied: "Please verify your email before signing in.",
   OAuthAccountNotLinked: "This email is linked to a different sign-in method.",
-  OAuthCallbackError: "Social sign-in failed. Please try again.",
-  SupabaseSignin: "Supabase sign-in failed. Please check your credentials.",
+  OAuthCallbackError: "Google sign-in failed. Please try again.",
+  SupabaseSignin: "That email or password looks wrong.",
 };
 
 type SearchParamsReader = {
@@ -86,7 +86,7 @@ function LoginForm() {
     if (isSupabaseGooglePreferred()) {
       const result = startSupabaseGoogleOAuth();
       if (result.ok) return;
-      setRuntimeErrorMessage(result.error || authErrorMessages.OAuthCallbackError);
+      setRuntimeErrorMessage(authErrorMessages.OAuthCallbackError);
       setIsGoogleSubmitting(false);
       return;
     }

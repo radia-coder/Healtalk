@@ -14,7 +14,7 @@ const authErrorMessages: Record<string, string> = {
   AccessDenied: "Access denied. Please verify your email first.",
   OAuthAccountNotLinked: "This email is linked to a different sign-in method.",
   OAuthCallbackError: "Sign-in failed. Please try again.",
-  SupabaseSignin: "Sign-in failed. Please check your credentials.",
+  SupabaseSignin: "Incorrect email or password.",
 };
 
 type SearchParamsReader = {
@@ -33,13 +33,6 @@ const getAdminQueryErrorMessage = (searchParams: SearchParamsReader | null) => {
 const getSessionRole = async () => {
   const session = await getSession();
   return (session?.user as { role?: string } | undefined)?.role;
-};
-
-const getPostLoginPath = (role?: string) => {
-  if (role === "ADMIN") return "/admin/dashboard";
-  if (role === "PSYCHOLOGIST") return "/psychologist/dashboard";
-  if (role === "PATIENT") return "/patient/dashboard";
-  return null;
 };
 
 function AdminLoginForm() {
@@ -62,10 +55,13 @@ function AdminLoginForm() {
 
     (async () => {
       const role = await getSessionRole();
-      const redirectPath = getPostLoginPath(role);
-      if (isActive && redirectPath) {
-        router.replace(redirectPath);
+      if (!isActive || !role) return;
+      if (role === "ADMIN") {
+        router.replace("/admin/dashboard");
+        return;
       }
+
+      router.replace("/login");
     })();
 
     return () => {
@@ -90,9 +86,8 @@ function AdminLoginForm() {
         });
         if (result && !result.error) {
           const role = await getSessionRole();
-          const redirectPath = getPostLoginPath(role);
-          if (redirectPath) {
-            router.push(redirectPath);
+          if (role === "ADMIN") {
+            router.push("/admin/dashboard");
             return;
           }
         }
@@ -115,13 +110,12 @@ function AdminLoginForm() {
     }
 
     const role = await getSessionRole();
-    const redirectPath = getPostLoginPath(role);
-    if (redirectPath) {
-      router.push(redirectPath);
+    if (role === "ADMIN") {
+      router.push("/admin/dashboard");
       return;
     }
 
-    setRuntimeError("We could not determine your account role. Please try again.");
+    setRuntimeError("This page is only for admin. Use the normal login page.");
     await signOut({ redirect: false });
     setIsSubmitting(false);
   };

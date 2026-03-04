@@ -14,6 +14,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session, status } = useSession();
   const role = (session?.user as { role?: string } | undefined)?.role;
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isPsychologistRoute = pathname?.startsWith("/psychologist");
+  const isPatientRoute = pathname?.startsWith("/patient");
+
+  const expectedRole = isAdminRoute
+    ? "ADMIN"
+    : isPsychologistRoute
+    ? "PSYCHOLOGIST"
+    : isPatientRoute
+    ? "PATIENT"
+    : null;
+
+  const getRoleHome = (currentRole?: string) => {
+    if (currentRole === "ADMIN") return "/admin/dashboard";
+    if (currentRole === "PSYCHOLOGIST") return "/psychologist/dashboard";
+    if (currentRole === "PATIENT") return "/patient/dashboard";
+    return "/login";
+  };
 
   useEffect(() => {
     if (status === "loading") return;
@@ -23,10 +40,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       return;
     }
 
-    if (isAdminRoute && role !== "ADMIN") {
-      router.push("/admin/login");
+    if (expectedRole && role !== expectedRole) {
+      if (expectedRole === "ADMIN") {
+        router.push("/admin/login");
+        return;
+      }
+      router.push(getRoleHome(role));
     }
-  }, [isAdminRoute, role, router, status]);
+  }, [expectedRole, isAdminRoute, role, router, status]);
 
   if (status === "loading") {
     return (
@@ -43,7 +64,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return null;
   }
 
-  if (isAdminRoute && role !== "ADMIN") {
+  if (expectedRole && role !== expectedRole) {
     return null;
   }
 

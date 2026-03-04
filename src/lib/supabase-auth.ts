@@ -21,6 +21,30 @@ export type SupabaseAuthUser = {
 
 const trimTrailingSlashes = (value: string) => value.replace(/\/+$/, "");
 
+const decodeBase64Url = (value: string) => {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const paddingLength = (4 - (normalized.length % 4)) % 4;
+  const padded = `${normalized}${"=".repeat(paddingLength)}`;
+  return Buffer.from(padded, "base64").toString("utf8");
+};
+
+const getProjectUrlFromAccessToken = (accessToken: string): string | null => {
+  const parts = accessToken.split(".");
+  if (parts.length < 2) return null;
+
+  try {
+    const payloadRaw = decodeBase64Url(parts[1]);
+    const payload = JSON.parse(payloadRaw) as { iss?: unknown };
+    if (typeof payload.iss !== "string" || !payload.iss.trim()) return null;
+
+    return trimTrailingSlashes(
+      payload.iss.replace(/\/auth\/v1\/?$/i, "").trim()
+    );
+  } catch {
+    return null;
+  }
+};
+
 const getSupabaseUrl = () =>
   process.env.SUPABASE_URL?.trim() || process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 
@@ -63,30 +87,39 @@ export const verifySupabaseAccessToken = async (
     return { user: null, error: "Supabase auth is not configured" };
   }
 
-  try {
-    const response = await withTimeout(`${config.url}/auth/v1/user`, {
-      method: "GET",
-      headers: {
-        apikey: config.anonKey,
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const tokenProjectUrl = getProjectUrlFromAccessToken(accessToken);
+  const urls = [tokenProjectUrl, config.url].filter(
+    (value, index, arr): value is string => Boolean(value) && arr.indexOf(value) === index
+  );
 
-    if (!response.ok) {
-      return { user: null, error: "Invalid Supabase access token" };
+  for (const url of urls) {
+    try {
+      const response = await withTimeout(`${url}/auth/v1/user`, {
+        method: "GET",
+        headers: {
+          apikey: config.anonKey,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const payload = (await response.json().catch(() => null)) as
+        | SupabaseAuthUser
+        | null;
+      if (!payload?.id) {
+        continue;
+      }
+
+      return { user: payload, error: null };
+    } catch {
+      // try next URL candidate
     }
-
-    const payload = (await response.json().catch(() => null)) as
-      | SupabaseAuthUser
-      | null;
-    if (!payload?.id) {
-      return { user: null, error: "Invalid Supabase user payload" };
-    }
-
-    return { user: payload, error: null };
-  } catch {
-    return { user: null, error: "Unable to verify Supabase token" };
   }
+
+  return { user: null, error: "Invalid Supabase access token" };
 };
 
 export const signInSupabaseWithPassword = async (

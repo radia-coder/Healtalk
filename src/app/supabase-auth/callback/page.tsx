@@ -17,6 +17,8 @@ export default function SupabaseAuthCallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
+      const wait = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
       const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const accessToken = params.get("access_token");
       const errorDescription =
@@ -37,9 +39,20 @@ export default function SupabaseAuthCallbackPage() {
         return;
       }
 
-      const session = await getSession();
-      const role = (session?.user as { role?: string } | undefined)?.role;
-      router.replace(getPostLoginPath(role));
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        const session = await getSession();
+        const role = (session?.user as { role?: string } | undefined)?.role;
+        if (role) {
+          router.replace(getPostLoginPath(role));
+          return;
+        }
+
+        if (attempt < 4) {
+          await wait(250);
+        }
+      }
+
+      router.replace("/login?error=OAuthCallbackError");
     };
 
     handleCallback();
@@ -58,7 +71,7 @@ export default function SupabaseAuthCallbackPage() {
           />
         </Link>
         <h1 className="text-2xl sm:text-[28px] font-bold text-[#111] mb-3 text-center">
-          Completing Supabase sign-in...
+          Completing sign-in...
         </h1>
         <p className="text-gray-500 text-center text-[16px]">
           We are securely finishing your login.

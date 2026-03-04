@@ -105,11 +105,11 @@ const SPECIALIZATIONS = [
 ];
 
 const statusTabs = [
+  { label: "All", value: "ALL" },
   { label: "Pending", value: "PENDING" },
   { label: "Approved", value: "APPROVED" },
   { label: "Rejected", value: "REJECTED" },
   { label: "Suspended", value: "SUSPENDED" },
-  { label: "All", value: "ALL" },
 ];
 
 const statusStyles: Record<string, string> = {
@@ -699,6 +699,10 @@ export default function PsychologistsManagementPage() {
       setMessage({ type: "error", text: "Password must be at least 8 characters." });
       return;
     }
+    if (editingPsychologistId && form.password.trim().length > 0 && form.password.trim().length < 8) {
+      setMessage({ type: "error", text: "New password must be at least 8 characters." });
+      return;
+    }
     if (!form.licenseNumber.trim()) {
       setMessage({ type: "error", text: "License number is required." });
       return;
@@ -724,11 +728,12 @@ export default function PsychologistsManagementPage() {
     setMessage(null);
 
     try {
+      const nextPassword = form.password.trim();
       const payload = {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         email: form.email.trim(),
-        password: form.password || undefined,
+        password: nextPassword || undefined,
         bio: form.bio.trim(),
         licenseNumber: form.licenseNumber.trim(),
         experience: Number(form.experience) || 0,
@@ -1565,7 +1570,6 @@ export default function PsychologistsManagementPage() {
             </div>
 
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#E6EAF2] sticky bottom-0 bg-white">
-              <Button variant="outline" onClick={closeModal} disabled={isSubmitting}>Cancel</Button>
               <Button
                 onClick={handleSaveDoctor}
                 disabled={isSubmitting || isPhotoUploading}

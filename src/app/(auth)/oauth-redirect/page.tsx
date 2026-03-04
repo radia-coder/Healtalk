@@ -17,14 +17,23 @@ export default function OAuthRedirectPage() {
 
   useEffect(() => {
     const resolveSession = async () => {
-      const session = await getSession();
-      if (!session?.user) {
-        router.replace("/login?error=OAuthCallbackError");
-        return;
+      const wait = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        const session = await getSession();
+        if (session?.user) {
+          const role = (session.user as { role?: string } | undefined)?.role;
+          router.replace(getPostLoginPath(role));
+          return;
+        }
+
+        if (attempt < 4) {
+          await wait(250);
+        }
       }
 
-      const role = (session.user as { role?: string } | undefined)?.role;
-      router.replace(getPostLoginPath(role));
+      router.replace("/login?error=OAuthCallbackError");
     };
 
     resolveSession();
